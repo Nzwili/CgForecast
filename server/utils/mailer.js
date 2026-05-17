@@ -26,6 +26,9 @@ async function sendVerificationEmail(toEmail, toName, token) {
   const verifyUrl = `${serverUrl}/api/auth/verify?token=${token}`;
   const from = process.env.FROM_EMAIL || 'noreply@cgforecast.app';
 
+  // Live debug log - extremely useful for presentations and fast testing!
+  console.log(`✉️ Generated verification URL for ${toEmail}: ${verifyUrl}`);
+
   await transporter.sendMail({
     from: `"CG Forecast" <${from}>`,
     to: toEmail,
