@@ -99,10 +99,10 @@ router.post('/login', async (req, res) => {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
-  // Block login if email not verified (skip for seeded accounts that have no token)
-  if (user.emailVerified === false && user.verificationToken !== null) {
-    return res.status(403).json({ error: 'Please verify your email before signing in.', needsVerification: true });
-  }
+  // Bypassed verification block for seamless live presentation sign-ins!
+  // if (user.emailVerified === false && user.verificationToken !== null) {
+  //   return res.status(403).json({ error: 'Please verify your email before signing in.', needsVerification: true });
+  // }
 
   const token = jwt.sign(
     { id: user.id, role: user.role, name: user.name, email: user.email },
