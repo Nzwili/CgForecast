@@ -35,16 +35,16 @@ def get_connection():
 
 def compute_features(group_id: int, conn, placeholder: str) -> pd.DataFrame:
     query = f"""
-        SELECT a.sessionDate as session_date,
+        SELECT a."sessionDate" as session_date,
                a.headcount,
-               a.rsvpCount as rsvp_count,
-               COALESCE(f.avgRating, 3.0) AS avg_rating
+               a."rsvpCount" as rsvp_count,
+               COALESCE(f."avgRating", 3.0) AS avg_rating
         FROM   "Attendance" a
         LEFT JOIN "Feedback" f
-               ON f.groupId = a.groupId
-              AND f.sessionDate = a.sessionDate
-        WHERE  a.groupId = {placeholder}
-        ORDER  BY a.sessionDate
+               ON f."groupId" = a."groupId"
+              AND f."sessionDate" = a."sessionDate"
+        WHERE  a."groupId" = {placeholder}
+        ORDER  BY a."sessionDate"
     """
     df = pd.read_sql(query, conn, params=[group_id])
     if df.empty:

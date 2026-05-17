@@ -49,17 +49,17 @@ def get_connection():
 
 def train_group(group_id: int, horizon: int, conn, placeholder: str):
     query = f"""
-        SELECT f.rollingAvg4w as rolling_avg_4w,
-               f.trendSlope as trend_slope,
-               f.rsvpRate as rsvp_rate,
-               f.feedbackAvg as feedback_avg,
+        SELECT f."rollingAvg4w" as rolling_avg_4w,
+               f."trendSlope" as trend_slope,
+               f."rsvpRate" as rsvp_rate,
+               f."feedbackAvg" as feedback_avg,
                a.headcount
         FROM   "Feature" f
         JOIN   "Attendance" a
-               ON a.groupId = f.groupId
-              AND a.sessionDate = f.featureDate
-        WHERE  f.groupId = {placeholder}
-        ORDER  BY f.featureDate
+               ON a."groupId" = f."groupId"
+              AND a."sessionDate" = f."featureDate"
+        WHERE  f."groupId" = {placeholder}
+        ORDER  BY f."featureDate"
     """
     df = pd.read_sql(query, conn, params=[group_id])
 
