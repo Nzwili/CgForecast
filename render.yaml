@@ -1,0 +1,41 @@
+# render.yaml — Render Blueprint Specification for CG Forecast
+services:
+  # 1. FastAPI Machine Learning Service
+  - type: web
+    name: cg-forecast-ml
+    env: python
+    buildCommand: pip install -r ml/requirements.txt
+    startCommand: cd ml && uvicorn service:app --host 0.0.0.0 --port 5001
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: congregate-db
+          property: connectionString
+      - key: PORT
+        value: 5001
+
+  # 2. Express Backend & React Frontend Web Service
+  - type: web
+    name: cg-forecast-app
+    env: node
+    plan: free
+    # Cloud Build Cycle: Translate Prisma to Postgres, install server/client, compile React, generate Postgres client
+    buildCommand: node server/prepare-prisma.js && npm install --prefix server && npm install --prefix client && npm run build --prefix client && npx --prefix server prisma generate
+    # Cloud Boot Cycle: Deploy database tables, run initial presentation seed data, and start production host
+    startCommand: npx --prefix server prisma migrate deploy && npx --prefix server prisma db seed && node server/index.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: congregate-db
+          property: connectionString
+      - key: ML_SERVICE_URL
+        value: http://cg-forecast-ml:5001
+      - key: PORT
+        value: 3001
+
+databases:
+  # 3. Free Tier PostgreSQL Database
+  - name: congregate-db
+    databaseName: congregate
+    user: congregate_user
+    plan: free

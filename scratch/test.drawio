@@ -1,0 +1,26 @@
+<mxfile host="Electron" modified="2024-05-05T00:00:00.000Z" agent="Mozilla/5.0" version="24.2.5" type="device">
+  <diagram id="ui-wireframes" name="Wireframes">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- Login Screen -->
+        <mxCell id="login_bg" value="Login Screen (Mobile)" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="300" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="login_email" value="Email Address" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;" vertex="1" parent="login_bg">
+          <mxGeometry x="25" y="250" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="login_pass" value="Password" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;" vertex="1" parent="login_bg">
+          <mxGeometry x="25" y="310" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="login_btn" value="Sign In" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#14b8a6;fontColor=#ffffff;fontStyle=1" vertex="1" parent="login_bg">
+          <mxGeometry x="25" y="380" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="login_title" value="Congregate&lt;br&gt;Forecasting System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" vertex="1" parent="login_bg">
+          <mxGeometry x="25" y="100" width="250" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,1697 @@
+Utilizing Support Vector Regression in Forecasting 
+Membership
+ Growth Trends 
+in Religious Organizations
+N
+zwili
+ V
+ictor
+ K
+yende
+A proposal submitted to the Department of Information Technology in the School of Computing and Information Technology in partial fulfillment of the requirements for the award of the Degree of Bachelor of Science in Information Technology, Jomo Kenyatta University of Agriculture and Technology.
+202
+6
+Declaration
+This research project is my original work and has not been presented for a degree in any other University.
+……………………………………….. Date: …………………
+Victor Nzwili
+ 
+This research project has been submitted for examination with my approval as University Supervisor.
+……………………………………….. Date: …………………
+Supervisor: Sydney Sichangi
+Abstract
+This study proposes the design and development of a 
+forecasting microservice
+ 
+that utilizes Support Vector Regression (SVR) to forecast 
+membership
+ growth trends using longitudinal feedback data collected from church members over time. While churches globally track attendance and giving, they lack tools to proactively anticipate engagement shifts based on qualitative and behavioral indicators. This research addresses a critical gap: the underutilization of machine learning
+ 
+specifically SVR
+ 
+for modeling sparse, time-series feedback in resource-constrained religious contexts. 
+Unlike full Church Management Systems, this system does not collect new member feedback but instead consumes exported CSV/JSON data from existing tools (e.g., Planning Center, Google Sheets, WhatsApp logs). Built as a standalone microservice with a pastor-facing dashboard, it uses Support Vector Regression (SVR) to forecast engagement for cohorts like “Youth Group” or “New Believers,” delivering plain-language alerts (e.g., “Youth engagement may drop 18% in Q3”) without individual profiling. The system is trained on simulated data and evaluated on real anonymized exports from 5 Nairobi churches (100–500 members), with validation via MAE/RMSE against linear regression and ARIMA baselines
+ 
+leveraging its proven robustness on small, noisy datasets and documented design patterns for ethical, lightweight predictive analytics in faith-based organizations.
+ Built using React, Node.js, and Python (scikit-learn), the platform delivers actionable, explainable forecasts without surveillance or individual profiling. The study employs Agile methodology across six sprints, with evaluation based on prediction accuracy (MAE, RMSE), usability, and pastoral utility. 
+Table of Contents
+Declaration
+i
+Abstract
+ii
+Table of Contents
+iii
+LIST OF TABLES
+vi
+LIST OF
+ FIGURES
+viii
+LIST OF
+ 
+APPENDICES
+ix
+LIST OF ACRONYMS
+x
+DEFINITION OF TERMS
+xii
+CHAPTER ONE: INTRODUCTION
+1
+1.1
+Introduction
+1
+1.2 Background
+1
+1.3 Statement of the problem
+3
+1.4 Proposed Solution
+3
+1.4.1 Comparison with Existing Platforms
+4
+1.4.2 Key Operations of the Proposed System
+4
+1.5 Objectives
+5
+1.5.1 General Objective
+5
+1.5.2 Specific Objectives
+5
+1.6 Research questions
+5
+1.7 Justification
+6
+1.8 Proposed Research and System Methodologies
+6
+1.8.1 
+Tools and Techniques
+6
+1.8.2 
+Justification
+8
+1.9 Scope
+9
+CHAPTER TWO: LITERATURE REVIEW
+10
+2.1 Introduction
+10
+2.2 Theoretical Review
+10
+2.2.1 Time-Series Forecasting in Human Behavior
+10
+2.2.2 The Role of Longitudinal Data in Early Warning Systems
+11
+2.3 Case Study Review
+12
+2.3.1 SVR in Healthcare Adherence Monitoring: Shatte et al. (2021)
+12
+2.3.2 SVR in Educational Performance Forecasting: Al-Rahmi et al. (2024)
+12
+2.3.3 Church Management Systems: Planning Center and Breeze
+13
+2.3.4 Faith-Based Predictive Analytics Pilot: LifeWay Research (2024)
+14
+2.4 Integration and Architecture
+14
+2.4.1 Microservice Architecture for Machine Learning Integration
+14
+2.4.2 Three-Tier Client-Server Architecture
+15
+2.4.3 Feature Engineering Pipeline Design
+16
+2.5 Support Vector Regression in Time-Series Modeling
+16
+2.5.1 Theoretical Advantages for Sparse Datasets
+16
+2.5.2 Practical Implementations in Social Forecasting
+17
+2.6 Critical Analysis of Existing Literature
+18
+2.7 Research Gaps
+19
+2.8 Summary
+20
+CHAPTER THREE
+22
+SYSTEM ANALYSIS AND DESIGN
+22
+3.1 Introduction
+22
+3.2 Systems Development Methodology
+22
+3.3 Feasibility Study
+24
+3.3.1 Technical Feasibility
+25
+3.3.2 Economic Feasibility
+25
+3.3.3 Operational Feasibility
+26
+3.3.4 Legal and Regulatory Feasibility
+26
+3.4 Requirements Elicitation
+27
+3.4.1 Data Collection
+27
+3.4.2 Sampling Techniques and Sample Size
+28
+Target Population
+28
+Instrument 1: Semi-Structured Interviews (Purposive Sampling)
+28
+Instrument 2: Structured Questionnaire (Convenience Sampling)
+29
+3.4.3 Ethical Considerations
+29
+3.5 Data Analysis
+31
+3.5.1 Key Findings from Interviews
+31
+3.5.2 Key Findings from Questionnaire
+32
+3.5.3 Summary of key findings
+35
+3.6 System Specification
+36
+3.6.1 Functional Requirements
+36
+3.6.2 Non-Functional Requirements
+40
+3.6.3 Requirements Traceability Matrix
+42
+3.7 Requirements Analysis and Modelling
+43
+3.7.1 System Actors
+44
+3.7.2 Use Case Diagram
+44
+3.8 Logical Design
+45
+3.8.1 System Architecture
+45
+3.8.2 Control Flow and Process Design
+47
+3.8.3 SVR Model Specification and Validation Strategy
+52
+3.8.4 Design for Non-Functional Requirements
+56
+3.9 Physical Design
+57
+3.9.1 Database Design
+57
+3.9.2 User Interface Design
+60
+APPENDICES
+64
+APPENDIX
+ 
+I:
+ 
+Work Plan
+64
+APPENDIX
+ 
+II:
+ 
+Project
+ 
+Budget
+65
+APPENDIX III: Data Collection Instruments
+65
+Appendix III-A: Semi-Structured Interview Guide
+65
+Appendix III-B: Structured Questionnaire
+67
+REFERENCES
+68
+LIST OF TABLES
+Table 3.1: Planned Sprint Schedule
+24
+Table 3.
+2
+: Feasibility Study Summary
+2
+5
+Table 3.
+3
+: Data Collection Sample Summary
+30
+Table 3.
+4
+: Summary of Key Questionnaire Findings
+3
+6
+Table 3.
+5
+: Functional Requirements Specification
+3
+7
+Table 3.
+6
+: Non-Functional Requirements Specification
+41
+Table 3.
+7
+: 
+Requirements Traceability Matrix
+43
+Table 3.8: 
+System Actors
+4
+4
+Table 3.9: 
+SVR Model Config
+55
+Table 3.10: 
+Database Tables
+5
+7
+Appendix Table 1: Work Plan
+63
+Appendix Table 2: Estimated Project Budget
+6
+4
+LIST OF
+ FIGURES
+Figure 3.1: Summary of Key Questionnaire Findings
+3
+3
+Figure 3.2: Current Data Collection Practices Among Respondents
+3
+4
+Figure 3.3: Satisfaction with Current Digital Tools
+3
+4
+Figure 3.4: Preferred Forecast Horizon
+3
+5
+Figure 3.5: Privacy Requirement — Group-Level Aggregation Only
+3
+5
+Figure 3.6: System Adoption Likelihood if 
+Free, Web
+-Based, and Mobile-Friendly 
+        
+3
+6
+Figure 3.7: Use Case Diagram —
+Membership
+ Engagement Forecasting System
+4
+5
+Figure 3.8: Three-Tier System Architecture with ML Microservice
+4
+7
+Figure 3.9: Level 0 Context Data Flow Diagram
+48
+Figure 3.10: Level 1 Data Flow Diagram — Internal Processes
+49
+Figure 3.11: Sequence Diagram — Forecast Request and Alert Generation Process
+5
+0
+Figure 3.12: Activity Diagram — Forecast Request and Alert Control Flow
+5
+1
+Figure 3.1
+3
+: Entity Relationship Diagram — 7 Database Tables
+59
+Figure 3.1
+4
+: Login page wireframe
+60
+Figure 3.1
+5
+: 
+Attendance Logger Wireframe
+61
+Figure 3.16: Home Dashboard Wireframe
+61
+Figure 3.17: Forecast Detail Wireframe
+62
+LIST OF
+ 
+APPENDICES
+Appendix I: Work Plan
+Appendix II: Project Budget
+Appendix III: Data Collection Instruments
+Appendix III-A: Semi-Structured Interview Guide
+Appendix III-B: Structured Questionnaire
+LIST OF ACRONYMS
+SVR - Support Vector Regression
+RBF - Radial Basis Function
+MAE - Mean Absolute Error
+RMSE - Root Mean Squared Error
+OLS - Ordinary Least Squares
+ARIMA - Autoregressive Integrated Moving Average
+CV - Cross-Validation
+PII - Personally Identifiable Information
+API - Application Programming Interface
+REST - Representational State Transfer
+JSON - JavaScript Object Notation
+JWT - JSON Web Token
+RBAC - Role-Based Access Control
+CRUD - Create, Read, Update, Delete
+ORM - Object-Relational Mapping
+UUID - Universally Unique Identifier
+ENUM - Enumeration
+SQL - Structured Query Language
+UI - User Interface
+UX - User Experience
+DBMS - Database Management System
+HTTPS - Hypertext Transfer Protocol Secure
+TLS - Transport Layer Security
+WCAG - Web Content Accessibility Guidelines
+ARIA - Accessible Rich Internet Applications
+DFD - Data Flow Diagram
+ERD - Entity Relationship Diagram
+CMS - Church Management System
+ICT4D - Information and Communication Technology for Development
+FaithTech - Faith Technology
+DPA - Data Protection Act
+KNCC - Kenya National Council of Churches
+ITU - International Telecommunication Union
+SUS - System Usability Scale
+DEFINITION OF TERMS
+The following technical and domain-specific terms are defined as used in this study.
+Membership
+ Engagement – The measurable degree of active participation by church members in communal activities, operationalized in this study through weekly attendance headcounts, event RSVP rates, and aggregated monthly satisfaction ratings at the cohort level.
+Epsilon-Insensitive Loss Function (ε-SVR) – A mathematical optimization function used in Support Vector Regression that disregards prediction errors falling within a predefined tolerance threshold (ε), thereby preventing the model from overfitting to minor, subjective fluctuations in self-reported feedback data.
+Feature Engineering – The systematic process of transforming raw, time-stamped operational records into structured numerical variables that capture predictive temporal patterns, such as rolling averages, linear trend slopes, and participation volatility ratios.
+GridSearchCV – An automated hyperparameter optimization technique that exhaustively evaluates all specified combinations of model parameters (e.g., regularization strength, kernel bandwidth) using cross-validation to identify the configuration that yields optimal prediction accuracy on historical data.
+Kernel Function – A mathematical transformation that implicitly maps input features into a higher-dimensional space where complex, non-linear relationships between historical behavioral indicators and future engagement outcomes become linearly separable; this study employs the Radial Basis Function (RBF) kernel.
+Lagged Feature – A predictive variable derived from historical observations at prior time intervals (e.g., 4-week or 8-week lookback windows), used to encode temporal dependencies and trend momentum for time-series forecasting.
+Longitudinal Data – Repeated, time-ordered observations of the same variables collected for consistent cohort groups over an extended period (minimum 24 weeks in this study), enabling the detection of directional trends rather than isolated snapshots.
+Mean Absolute Error (MAE) – A model evaluation metric that calculates the average absolute difference between predicted and actual attendance headcounts, providing an interpretable measure of forecast accuracy in terms of actual member counts.
+Microservice Architecture – A software design pattern that decomposes the system into loosely coupled, independently deployable services (e.g., a Python-based SVR forecasting engine separate from the Node.js web API), enabling isolated scaling, easier maintenance, and technology-specific optimization.
+Personally Identifiable Information (PII) – Any data that can uniquely identify an individual member (e.g., names, phone numbers, national IDs, or individual attendance logs); structurally excluded from all analytical tables in this system to enforce group-level anonymization and comply with Kenya’s Data Protection Act (2019).
+Radial Basis Function (RBF) Kernel – The specific kernel function selected for the SVR model that measures similarity between data points based on Euclidean distance, proving highly effective for capturing non-linear, context-dependent engagement dynamics in small, noisy datasets.
+Role-Based Access Control (RBAC) – A security mechanism that restricts system functionality based on authenticated user roles (Admin, Pastor, Usher), ensuring that data submission, forecast viewing, and system configuration permissions are strictly segregated according to operational responsibility.
+Root Mean Squared Error (RMSE) – A secondary model evaluation metric that squares prediction errors before averaging and taking the square root, placing greater penalty on large forecast deviations (e.g., sudden attendance drops) to highlight critical accuracy failures.
+Support Vector Regression (SVR) – A supervised machine learning algorithm adapted for continuous outcome prediction that identifies an optimal regression hyperplane maximizing the margin of tolerance around actual data points, specifically chosen for its robust generalization on small, irregularly sampled longitudinal datasets.
+System Usability Scale (SUS) – A standardized 10-item questionnaire administered to end-users to quantitatively assess the dashboard’s learnability, efficiency, and satisfaction, with a score ≥68 indicating above-average usability for non-technical pastoral staff.
+TimeSeriesSplit – A cross-validation strategy that partitions chronological data into sequentially expanding training windows and fixed future test sets, preventing temporal data leakage and ensuring the SVR model is evaluated under realistic forward-predicting conditions.
+Walk-Forward Validation – The overarching time-series evaluation methodology employed in this study, wherein the model is trained on historical data and tested exclusively on subsequent unseen periods, mirroring real-world deployment and preventing optimistic accuracy inflation
+.
+CHAPTER ONE
+: INTRODUCTION
+Introduction
+This chapter presents the foundational framework for a research project focused on leveraging Support Vector Regression (SVR) to forecast
+ population growth trends in religious organizations using existing historical
+ longitudinal feedback
+ data
+. It establishes the context of digital transformation in religious 
+instittuions,
+ identifies a clear gap in predictive capabilities, and proposes a technically grounded solution that aligns with both academic rigor and pastoral needs. By centering SVR as the core analytical method
+ and 
+not merely an add-on 
+feature, 
+the study ensures novelty, feasibility, and relevance for 
+this 
+project. The chapter outlines the problem, objectives, research questions, methodology, and scope in a structure consistent with approved departmental standards.
+1.2 Background
+ 
+The integration of data-driven decision-making into organizational operations has become a hallmark of digital transformation across banking, healthcare, education, and e-commerce sectors. In these domains, predictive analytics enables proactive planning, resource optimization, and personalized service delivery (Heeks, 2023). For instance, retail platforms use time-series forecasting to anticipate demand, while healthcare systems predict patient no-shows using historical appointment data (Zhang et al., 2023; Shatte et al., 2021). Despite these advances, religious 
+organizations, 
+particularly in developing regions
+ 
+remain largely reactive in their administrative and pastoral approaches, relying on intuition, anecdotal observation, or lagging indicators such as attendance drops or formal exit notices.
+Religious organizations globally collect operational data: weekly attendance, event participation, and increasingly, digital feedback. However, this data is rarely structured or leveraged for forward-looking insight. Instead, it serves retrospective reporting
+ 
+answering “what happened?” rather than “what might happen next?” This limitation is especially consequential in contexts where pastoral capacity is stretched thin, and early intervention could prevent disengagement before it becomes irreversible. Chaves and Anderson (2022) found that 70% of church dropouts leave silently, often due to unmet relational or spiritual needs that went undetected until it was too late. Similarly, the Kenya National Council of Churches (KNCC, 2024) reports that 68% of 
+new believers in Kenya disengage within six months, citing lack of follow-up as the primary reason.
+Machine learning offers a promising pathway to bridge this gap. Among algorithms suitable for small, noisy, and irregularly sampled datasets
+ 
+common characteristics of church feedback
+ 
+Support Vector Regression (SVR) stands out for its theoretical robustness and practical performance. Unlike deep learning models that require thousands of data points, SVR operates effectively with limited observations by mapping input features into high-dimensional spaces using kernel functions, then identifying optimal hyperplanes that minimize prediction error while maximizing generalization (Smola & Schölkopf, 2004).
+Despite this suitability, SVR remains virtually unexplored in religious or 
+membership
+ contexts. Existing Church Management Systems (CMS) like Planning Center and Breeze offer rich dashboards for historical metrics but provide no predictive capabilities (Mullins, 2021). Academic research on faith-based organizations focuses on theological discourse or sociological trends
+ 
+not applied predictive modeling (Chen et al., 2023).
+This disconnect is exacerbated in Global South contexts like Kenya, where digital adoption in churches is growing but remains fragmented. Many 
+populations
+ use WhatsApp groups for announcements, Google Forms for event RSVPs, and paper registers for attendance
+ 
+creating siloed, unstructured data that cannot be modeled. Even when digital tools are adopted, they lack integration between feedback, attendance, and behavioral patterns.
+The opportunity, therefore, lies in designing a lightweight, interpretable, and ethically grounded predictive microservice that leverages SVR to forecast 
+membership
+ engagement from existing historical data exports. Such a system would not replace human shepherding but extend it
+ 
+enabling pastors to identify at-risk groups weeks in advance and deploy timely, grace-filled interventions.
+The opportunity, therefore, lies in designing a lightweight, interpretable, and ethically grounded predictive system that leverages SVR to forecast 
+member
+ engagement from voluntary, longitudinal feedback. Such a system would not replace human shepherding but extend it
+ 
+enabling pastors to identify at-risk groups (e.g., young adults, new believers) weeks in advance and deploy timely, grace-filled interventions. By focusing on group-level trends rather than 
+individual profiling, and by using open-source, the solution remains accessible, privacy-respecting, and mission-aligned. This research addresses that opportunity, contributing to both ICT4D and FaithTech by demonstrating how accessible machine learning can serve the Great Commission in the digital age.
+1.
+3
+ Statement of the problem
+Religious organizations in Nairobi lack predictive tools to anticipate population growth trends, relying instead on lagging indicators like attendance drops or exit interviews
+ 
+often too late for meaningful intervention. While digital record-keeping has improved data collection, existing Church Management Systems provide only historical reporting, not forward-looking insights. This reactive approach results in preventable attrition, wasted ministry resources, and diminished community cohesion.
+Current analytics in religious platforms are limited to descriptive dashboards (e.g., “Total Attendance: 240”) with no integration of qualitative feedback or temporal modeling. Academic literature on 
+membership
+ behavior focuses on sociology or theology, not applied machine learning (Chaves, 2020; Mullins, 2021). Meanwhile, commercial predictive analytics tools are cost-prohibitive and designed for retail or marketing
+ 
+not pastoral care.
+Support Vector Regression (SVR) offers a theoretically sound alternative: it performs well on small, non-linear datasets and provides robust generalization
+ 
+ideal for churches collecting modest amounts of feedback over time. Yet no existing system applies SVR to longitudinal pastoral data for growth forecasting.
+This study therefore investigates how Support Vector Regression can be leveraged to build an affordable, interpretable, and ethically grounded forecasting microservice that helps churches anticipate population growth trends from existing historical data exports.
+1.
+4
+ Proposed Solution
+ 
+This research proposes a standalone SVR microservice integrated with a React-based pastoral dashboard that ingests existing church attendance and membership records, applies feature engineering to derive temporal predictive variables, and generates group-level population growth forecasts for church leadership. The system comprises four integrated components: a secure data upload module that accepts CSV and Excel exports from churches' existing digital tools; a 
+feature engineering pipeline that transforms raw inputs into time-lagged variables such as rolling averages, trend slopes, and participation volatility measures; an SVR forecasting engine implemented via Python's scikit-learn library and exposed through a FastAPI REST endpoint; and a pastoral dashboard built with React.js that visualizes predicted trends and generates actionable, plain-language alerts for church leaders
+.
+1.
+4
+.1 Comparison with Existing 
+Platforms
+ 
+Globally, enterprise Church Management Systems like Planning Center offer rich reporting dashboards but provide no predictive modeling capabilities
+ 
+their analytics stop at historical charts. Academic machine learning applications focus predominantly on consumer behavior or public health domains and rarely address the unique data constraints of faith-based organizations. Regionally, African churches often rely on fragmented tools (WhatsApp, Google Forms, paper registers) creating unstructured data that cannot support modeling. In contrast, the proposed solution bridges this gap by delivering a system grounded in proven machine learning (SVR), designed explicitly for pastoral
+ 
+not commercial
+ 
+objectives, and deployable on free-tier infrastructure accessible to small 
+populations
+.
+1.
+4
+.2 Key Operations of the Proposed System
+Existing Data Ingestion: Church administrators upload historical attendance and membership CSV/Excel exports through the secure web interface.
+Data Validation and Cleaning: The system validates upload structure, flags missing values, and normalizes date formats before processing.
+Feature Engineering: The pipeline computes lagged variables from the uploaded records (e.g., 4-week rolling average, 8-week trend slope, participation rate).
+SVR Model Training: The model is trained monthly on accumulated cleaned records with GridSearchCV hyperparameter optimization.
+Trend Forecasting: Predicts group-level population growth or decline one to three months ahead with confidence intervals.
+Actionable Alerting: Dashboard shows forecast risks with suggested interventions (e.g., 'Youth group attendance is forecast to decline — consider a reconnection event').
+Ethical Safeguards: No individual profiling; all data aggregated at group level; personal identifiers stripped at upload layer
+1.
+5
+ Objectives
+1.
+5
+.1 General Objective
+To
+ 
+design, develop, and evaluate a Support Vector Regression system for forecasting population growth trends in faith organizations from existing longitudinal membership and attendance data
+.
+1.
+5
+.2 Specific Objectives
+To
+ identify key longitudinal data indicators from existing church records that are correlated with population growth trends in faith organizations through literature review and stakeholder consultation
+To design and implement an SVR-based forecasting model trained on simulated and real anonymized church data.
+To develop a responsive dashboard that visualizes predictions and generates actionable insights on population growth trends.
+To 
+test and validate
+ the system’s forecasting accuracy, usability, and pastoral utility.
+1.
+6
+ Research questions
+What 
+are the key longitudinal data indicators available in existing church membership and attendance records that can be effectively used for predicting population growth trends in faith organizations?
+How 
+accurately can Support Vector Regression predict future population growth trends in religious organizations?
+What 
+is the most effective approach to develop a dashboard that visualizes predictions and generates actionable insights
+ 
+for church leadership
+?
+To 
+what extent will church leaders perceive the usability and actionability of SVR-generated forecasts for pastoral planning?
+1.
+7
+ Justification
+ 
+This 
+This research directly supports the core mission of religious organizations: knowing, caring for, and retaining their flock. By transforming passive data into proactive insight, the system empowers pastors to intervene before disengagement becomes departure. Technically, it demonstrates that advanced ML need not be complex or costly
+ 
+SVR on modest data can deliver real value. Academically, it fills a gap in both ICT4D (applied ML in Global South NGOs) and FaithTech (ethical AI for religious contexts).
+Legally and ethically, the system respects autonomy: predictions are group-level, and no surveillance occurs. Practically, it uses free, open-source tools deployable by any church with internet access. In Kenya
+ 
+where churches are pillars of community resilience
+ 
+this tool can strengthen social cohesion through data-informed care, not control.
+1.
+8
+ Proposed Research and System Methodologies
+This 
+study will employ the Agile Software Development methodology to ensure iterative design, continuous validation, and efficient delivery of a functional predictive analytics system.
+1.
+8
+.1 
+Tools and Techniques
+This study will utilize the following technologies, each selected for its suitability to the research goals, compatibility with lightweight deployment, and alignment with open-source, cost-effective development:
+Frontend: React.js (with Vite and Tailwind CSS)
+The frontend will be a pastor- and administrator-facing dashboard built with React.js, Vite, and Tailwind CSS. Its sole purpose is to allow authorized users to upload their church’s existing historical data exports (e.g., CSV files from Planning Center or Google Sheets), view group-level forecasts, and receive plain-language, actionable alerts. The interface will be mobile-responsive and designed for non-technical users, ensuring accessibility on any modern smartphone or computer browser.
+Backend: Node.js with Express.js
+A lean Node.js/Express.js backend will serve as the system’s orchestration layer. It will manage user authentication, handle the secure upload of historical data files, trigger the feature engineering pipeline, and coordinate requests between the frontend and the 
+dedicated Python ML microservice. This API layer ensures a clean separation of concerns and a responsive user experience.
+ Its non-blocking I/O model ensures efficient performance even on low-cost hosting platforms.
+Machine Learning Engine: 
+Python with scikit-learn (as a Microservice)
+The core predictive capability is a standalone Python microservice built with FastAPI and scikit-learn. This service is entirely decoupled from the main web application. It receives pre-processed, group-level feature vectors from the Node.js orchestrator, loads the trained SVR model, generates forecasts for 4, 8, and 12-week horizons, and returns predictions with confidence intervals. This microservice architecture allows for independent development, testing, and scaling of the ML component without impacting the rest of the system.
+ 
+The SVR model will be trained on engineered features such as rolling averages, trend slopes, and participation volatility to forecast group-level engagement across three selectable horizons: 1 week (immediate operational planning), 4 weeks (monthly pastoral planning), and 8–12 weeks (quarterly ministry strategy), with shorter horizons yielding higher prediction accuracy.
+Database: PostgreSQL
+PostgreSQL will store all system data, including user accounts, church group definitions, engineered features, forecast results, and alert logs. The schema is explicitly designed to enforce the project’s ethical mandate: no personally identifiable information (PII) is stored in any analytical table. All records in the features, forecasts, and alerts tables are linked exclusively to anonymized group_ids (e.g., “Youth Group”), making individual profiling structurally impossible
+.
+Deployment: Render (free tier)
+The full stack (frontend, backend, and database) will be deployed on Render, a cloud platform offering free-tier hosting for web applications. Render supports seamless integration of React, Node.js, and PostgreSQL, automatic HTTPS, and Git-based continuous deployment. This eliminates infrastructure costs and simplifies maintenance
+ 
+key considerations for resource-constrained religious organizations.
+Evaluation Metrics: MAE, RMSE, and System Usability Scale (SUS)
+The system’s effectiveness will be evaluated using both technical and human-centered metrics. Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) will quantify the SVR model’s forecasting accuracy against baseline models (linear regression, ARIMA). The System Usability Scale (SUS), a standardized 10-item questionnaire, will assess the dashboard’s intuitiveness and actionability for pastors and administrators.
+1.
+8
+.2 
+Justification
+ 
+The Agile Software Development methodology is particularly well-suited for this research because it enables iterative validation of both the technical performance of the SVR model and the practical utility of the forecasting dashboard in real-world pastoral contexts. Unlike rigid waterfall models, Agile allows for continuous refinement based on early feedback from simulated data testing to usability trials ensuring the system remains aligned with actual user needs rather than theoretical 
+assumptions.
+ This
+ is crucial, as the quality and structure of the historical data exports from partner churches may vary, requiring adaptive refinement of the ingestion and feature engineering pipeline.
+The chosen microservice architecture focus
+es on
+ the project novel contribution: the SVR forecasting engine. By decoupling the ML component, the system can be developed, tested, and validated as a discrete unit of value that can be integrated into a church’s existing digital ecosystem, rather than attempting to replace it with a full CMS.
+The chosen technology stack React for the frontend, Node.js for the API layer, and Python/scikit-learn for the SVR engine strikes an optimal balance between modern capability, open-source accessibility, and deployment simplicity. React ensures a responsive, mobile-friendly interface critical for users accessing the system via smartphones; Node.js provides lightweight, scalable backend services; and scikit-learn offers a battle-tested, well-documented implementation of SVR that requires no GPU or cloud dependency making it ideal for resource-constrained environments.
+Support Vector Regression (SVR) was selected over alternatives like deep learning or ARIMA because of its proven robustness on the small, sparse, and noisy datasets that characterize church 
+feedback. As shown in healthcare and education studies (Shatte et al., 2021; Al-Rahmi et al., 2024), SVR excels where data is limited
+ 
+a perfect fit for Nairobi churches that may only have 6–12 months of digital records.
+Finally, the use of free-tier cloud platforms (Render, Railway) and open-source tools ensures the prototype is not only academically rigorous but also practically deployable without licensing costs or complex infrastructure.
+1.
+9
+ Scope
+ 
+This study focuses on evangelical faith organizations in Nairobi County, Kenya, and centers on the design, development, and evaluation of an SVR-based predictive analytics system for forecasting population growth trends from existing longitudinal membership and attendance records. The target organizations are evangelical Christian churches with 100 to 500 active members that already maintain digital attendance and membership records in spreadsheets, Google Sheets, or a Church Management System from which data can be exported in CSV or Excel format.
+ 
+The study targets a purposive sample of five to ten such churches in Nairobi County. Selected churches must have maintained consistent digital records for a minimum of 24 weeks, have defined membership cohort groups (e.g., youth, new believers, young families), and have a designated church administrator or pastor who can participate in requirements elicitation interviews and usability evaluation. The demographic profile of target churches is evangelical Protestant, urban Nairobi setting, congregation size 100 to 500 members, and existing use of at least one digital record-keeping tool.
+The system will support five core functions: secure ingestion of historical attendance and membership data via CSV/Excel upload; feature engineering pipeline computing lagged temporal variables; SVR-based forecasting of group-level population growth or decline; proactive alerting for decline risk (greater than 15% drop) and growth acceleration; and visualization of trends and forecasts through a pastoral dashboard.
+ 
+The prototype will be developed as a web-based application using React, Node.js, Python (scikit-learn), and PostgreSQL, deployable on free-tier cloud platforms. The scope explicitly excludes individual member profiling, personal-level predictions, financial or giving forecasting, native mobile app development for iOS or Android, 
+real-time attendance capture (e.g., biometric check-in), and integration with external live Church Management System APIs. The system relies on periodic batch uploads of historical data rather than live data feeds. Member-facing data entry interfaces are also excluded from the current scope; any future implementation of live member input will be addressed as a recommendation in Chapter 4. The resulting system serves as a proof-of-concept demonstrating the feasibility, accuracy, and pastoral utility of SVR-driven population growth forecasting in resource-constrained faith organizations. The prototype will not go live in production.
+CHAPTER TWO
+: 
+LITERATURE REVIEW
+2.1 Introduction
+This chapter critically reviews existing literature on predictive analytics in organizational contexts, with a focused examination of machine learning applications in social forecasting, 
+membership
+ dynamics, and time-series modeling using Support Vector Regression (SVR). The review is structured across six thematic areas: the theoretical foundations of predictive modeling in social systems; empirical studies on 
+membership
+ engagement and retention; case studies of directly relevant SVR and Church Management System implementations; integration and architecture patterns for embedding machine learning into web-based systems; SVR as a methodological framework for sparse, longitudinal data; and a critical synthesis identifying research gaps. By drawing on insights from ICT for development, data science, and pastoral practice, this chapter establishes the evidence base that justifies the proposed study. The analysis draws on peer-reviewed studies, industry reports, and documented implementations from both global and African contexts to ensure relevance and applicability.
+2.2 Theoretical Review
+2.2.1 Time-Series Forecasting in Human Behavior
+Predictive modeling of human behavior relies on the foundational assumption that past patterns contain reliable signals about future states. In time-series analysis, this principle is formalized through a range of approaches: autoregressive models that weight recent observations most heavily, moving average models that smooth noise by averaging across windows, and machine learning regressors that capture non-linear relationships between historical features and future outcomes (Hyndman & Athanasopoulos, 2021). Unlike physical systems whose behavior is governed by deterministic equations, human behavioral data is characteristically sparse, irregularly sampled, and noisy properties that challenge classical statistical models which assume regular intervals and normally distributed residuals.
+Machine learning approaches, particularly kernel-based methods such as Support Vector Regression (SVR), address these limitations directly by mapping input features into high-dimensional spaces where non-linear relationships become linearly separable (Smola & Schölkopf, 2004). This theoretical mechanism makes SVR especially well-suited to contexts like 
+church member feedback, where data points are infrequent for example, monthly satisfaction surveys and inherently subjective. A member who rates their engagement as 3 out of 5 in one week and 4 out of 5 the following week may not have experienced a meaningful change in actual participation; the SVR model's epsilon-insensitive loss function is specifically designed to treat such minor fluctuations as noise rather than signal, producing more stable and interpretable forecasts than models that penalize every deviation.
+The application of time-series forecasting to human organizational behavior has expanded significantly in the past decade, moving from financial and industrial domains into social systems including healthcare adherence prediction (Shatte et al., 2021), educational performance forecasting (Al-Rahmi et al., 2024), and employee retention modeling. Each of these applications shares a common theoretical backbone: the identification of leading behavioral indicators actions or attitudes that precede a significant outcome by several weeks or months which can be detected early enough to enable intervention. This study applies the same theoretical framework to 
+membership
+ engagement, treating weekly attendance rates, event participation ratios, and monthly satisfaction scores as leading indicators of group-level disengagement trajectories.
+2.2.2 The Role of Longitudinal Data in Early Warning Systems
+Longitudinal data  repeated observations of the same variables for the same subjects at consistent intervals over time is the essential raw material for early warning systems in social organizations. The diagnostic power of longitudinal data lies in its capacity to reveal trajectories rather than snapshots: a single low attendance figure is ambiguous, but a declining trend across six consecutive weeks is a statistically meaningful signal that warrants pastoral attention. In healthcare, weekly mood and symptom logs have been shown to predict patient relapse up to three weeks in advance, enabling clinicians to schedule preventive interventions before a crisis occurs (Shatte et al., 2021). In education, cumulative quiz performance records forecast final course outcomes with sufficient lead time for targeted academic support (Al-Rahmi et al., 2024).
+These systems share a fundamental design principle that this study adopts: lagged features derived from longitudinal records including rolling averages, linear trend slopes computed across recent windows, and volatility measures serve as the primary predictors for future behavioral outcomes. The rolling average captures stable central tendency; the trend slope captures directionality 
+(whether the trajectory is improving or declining); and the volatility measure captures consistency (whether a group's engagement is stable or erratic). Churches already collect the raw inputs for these features informally through attendance registers, event RSVPs, and post-service feedback, but rarely structure them into model-ready longitudinal datasets. The theoretical contribution of this study lies in demonstrating that this existing, underutilized data is sufficient when properly engineered to power a meaningful predictive system without requiring additional data collection infrastructure.
+2.3 Case Study Review
+2.3.1 SVR in Healthcare Adherence Monitoring: Shatte et al. (2021)
+The most structurally analogous SVR application to the proposed study is documented by Shatte et al. (2021), who deployed a Support Vector Regression model to predict mental health relapse risk from weekly symptom diary entries collected over 12 weeks from 43 outpatient participants. The study is directly relevant because the data profile is structurally identical to church feedback data: sparse observations (weekly cadence), voluntary self-reporting, ordinal rating scales, and high within-subject variance due to subjective mood fluctuations. Shatte et al. (2021) found that the SVR model's epsilon-insensitive loss function provided a decisive accuracy advantage over logistic regression by treating minor weekly rating fluctuations as noise rather than signal, achieving 89% classification accuracy on the holdout test set. The study explicitly recommends SVR for behavioral forecasting contexts where datasets contain fewer than 200 training observations the precise regime applicable to small-to-medium 
+populations
+ collecting 6 to 12 months of weekly feedback. This precedent directly validates both the algorithmic choice and the feasibility assumptions of the current study.
+2.3.2 SVR in Educational Performance Forecasting: Al-Rahmi et al. (2024)
+Al-Rahmi et al. (2024) implemented an SVR model to forecast final examination scores from weekly quiz performance data across 180 undergraduate students, achieving a Root Mean Squared Error (RMSE) of 0.32 grade points a 31% improvement over ordinary least squares linear regression on the same dataset. The study is particularly relevant to the current work because its feature engineering strategy directly parallels the approach proposed here: rolling averages of recent quiz scores and linear trend slopes computed across 8-week windows were the primary 
+predictors, with the SVR model's RBF kernel capturing the non-linear relationship between mid-semester engagement patterns and final outcomes. Al-Rahmi et al. (2024) demonstrated that this multi-feature approach with temporal lagging outperforms univariate approaches that rely solely on the most recent observation, confirming that the additional engineering complexity is methodologically justified. This finding supports the decision in the current study to derive four engineered features
+:
+ rolling average, trend slope, RSVP rate, and feedback average rather than using raw attendance counts directly as model inputs.
+2.3.3 Church Management Systems: Planning Center and Breeze
+Planning Center is the dominant Church Management System globally, serving over 60,000 
+populations
+ predominantly in North America. Its platform integrates attendance tracking through a Check-Ins module, member directory management through a People module, and financial contribution tracking through a Giving module. Despite this operational breadth, Planning Center's analytical capability is entirely retrospective: its reporting dashboard presents charts of historical attendance and giving trends but provides no forward-looking forecasting, no anomaly detection, and no mechanism for integrating qualitative member feedback data into its analytics. The system requires stable internet connectivity and a minimum subscription of USD 14 per month, rendering it inaccessible to the majority of Kenyan 
+populations
+ operating on constrained budgets. The commercial success of Planning Center in the Western market confirms that church leaders will adopt digital management tools when they are purpose-built and intuitive; its analytical ceiling as a purely descriptive platform confirms the gap that the current research addresses.
+Breeze ChMS serves the small-to-medium congregation segment with a streamlined feature set comprising attendance logging, member directory management, and basic summary reporting. Like Planning Center, Breeze's analytics are entirely historical: the system answers the question 'what happened last month?' but provides no mechanism for anticipating future trends. Breeze's pricing of USD 72 per month and cloud-only architecture make it similarly inaccessible in resource-constrained African contexts. Both systems' limitations a shared analytical ceiling at retrospective description provide the direct practical motivation for this study's focus on forward-looking SVR-based forecasting.
+2.3.4 Faith-Based Predictive Analytics Pilot: LifeWay Research (2024)
+The closest documented precedent for predictive analytics in a 
+membership
+ context is a 2024 pilot study reported by LifeWay Research, involving a large evangelical congregation in the United States with approximately 4,200 active members. The church deployed a logistic regression model trained on Customer Relationship Management (CRM) data encompassing attendance history, small group participation logs, financial giving patterns, and social media engagement metrics to identify members at elevated risk of disengagement within the following 90 days. The pilot achieved a precision of 71% in correctly flagging at-risk members, and pastoral intervention targeting the flagged cohort resulted in a measured 23% reduction in six-month attrition relative to a control group receiving standard follow-up procedures (LifeWay Research, 2024).
+This pilot offers three lessons of direct relevance to the current study. First, the integration of multiple behavioral signals rather than reliance on a single attendance metric substantially improved prediction precision, validating the multi-feature design of the proposed system. Second, the pilot's reliance on individual-level CRM profiling generated privacy concerns among 34% of surveyed congregation members, directly motivating the group-level, anonymized architecture adopted in this study where predictions are generated for cohorts such as the Youth Group rather than for named individuals. Third, the pilot required substantial cloud CRM infrastructure and specialist data science expertise, making it entirely inaccessible to 
+populations
+ with fewer than 500 members or annual technology budgets below USD 10,000. The proposed system addresses all three limitations simultaneously: it operates on group-level aggregates, uses open-source tooling deployable on free-tier cloud platforms, and is designed for 
+populations
+ as small as 
+100
+ members.
+2.4 Integration and Architecture
+2.4.1 Microservice Architecture for Machine Learning Integration
+The standard architectural pattern for integrating machine learning models into web applications is the microservice approach, in which the ML model is deployed as an independent service that communicates with the main application layer via a REST API (Newman, 2023). This pattern is especially appropriate for SVR-based systems because it allows the Python-based scikit-learn model to run in its own runtime environment, fully isolated from the Node.js web application layer. This isolation prevents library version conflicts between Python ML dependencies and Node.js 
+web dependencies, enables independent redeployment of the model without interrupting the web service, and allows the ML service to be scaled separately if prediction demand increases. Zhang et al. (2023) employed this exact pattern in their retail SVR demand forecasting system, deploying the SVR engine as a Flask microservice called by a Node.js orchestration layer, and reported that the separation of concerns reduced debugging time by approximately 40% compared to an earlier monolithic implementation. The current study adopts the same microservice architecture, using FastAPI in place of Flask for its superior asynchronous performance and automatic OpenAPI documentation generation.
+A monolithic alternative embedding Python within the Node.js application via child process spawning  was considered and rejected for three reasons. First, it couples the machine learning and web application release cycles, meaning a model update requires redeployment of the entire application. Second, it degrades response time when model retraining is triggered during active user sessions, as both processes compete for the same compute resources. Third, it significantly complicates deployment on free-tier cloud platforms such as Render, which allocate isolated compute containers per service. The microservice pattern eliminates all three concerns at the cost of minimal inter-service network latency, typically 10 to 50 milliseconds for local calls.
+2.4.2 Three-Tier Client-Server Architecture
+The three-tier client-server architecture separating the presentation layer, application layer, and data layer into distinct tiers is the established pattern for web-based information systems and provides the structural framework for this project (Heeks, 2023). The presentation tier, built with React.js, handles all user interaction including attendance form submission, feedback surveys, and dashboard visualization. The application tier, built with Node.js and Express.js, manages authentication, business logic, data validation, and orchestration of calls to the Python ML microservice. The data tier, implemented with PostgreSQL, provides persistent, ACID-compliant relational storage for the longitudinal time-series records required for model training and the forecast and alert records required for dashboard display.
+This architecture is extensible without structural change: additional congregation groups, new input feature types, or alternative ML models can be added at the application layer by creating new API routes and retraining without modifying the frontend or database schema. The separation of 
+concerns also enables targeted testing the React frontend can be tested independently of the API, and the Python ML service can be unit-tested independently of both which directly supports the structured testing strategy described in Chapter 4.
+2.4.3 Feature Engineering Pipeline Design
+The integration of raw operational records with a machine learning forecasting engine requires an intermediate data transformation stage. In comparable implementations reviewed by Khan et al. (2022) and Al-Rahmi et al. (2024), this stage operates as a nightly batch process: raw records accumulated during the operational day are retrieved from the database, transformed into lagged features through rolling computations, and written to a dedicated features table from which the model reads at both training and inference time. This design decouples data ingestion from model operation, ensuring that pastor-facing forecast requests are served in milliseconds from pre-computed features rather than requiring computationally expensive real-time feature calculation on every request. The current study adopts this batch pipeline architecture, implemented as a scheduled Python script triggered by a Node.js cron job every Sunday at 02:00 East Africa Time, processing the preceding week's records for all registered congregation groups.
+2.5 Support Vector Regression in Time-Series Modeling
+2.5.1 Theoretical Advantages for Sparse Datasets
+Support Vector Regression (SVR) is a kernel-based supervised machine learning algorithm that extends the Support Vector Machine framework to continuous regression tasks. The foundational contribution of SVR is the epsilon-insensitive loss function, introduced by Drucker et al. (1997), which ignores prediction errors smaller than a user-defined threshold ε and applies a linear penalty only to errors that exceed this threshold. This property is of direct practical significance in the current study: minor week-to-week fluctuations in attendance headcount or satisfaction ratings attributable to factors such as public holidays, weather, or individual respondent mood fall within the epsilon tube and contribute zero loss, preventing the model from overfitting to noise. Only sustained directional changes in engagement, which represent genuine behavioral signals, drive the model's learning.
+A second critical advantage is SVR's behavior under conditions of limited training data. Unlike deep neural networks, which require thousands of labeled observations to generalize reliably, SVR 
+achieves strong generalization from small datasets by constructing a maximum-margin hyperplane in a high-dimensional kernel-induced feature space (Smola & Schölkopf, 2004). The Radial Basis Function (RBF) kernel, which measures similarity between observations as a Gaussian function of their Euclidean distance in the original feature space, is particularly effective for capturing the non-linear, context-dependent relationships between lagged behavioral indicators and future engagement outcomes. This theoretical suitability for small, noisy, non-linear datasets
+ 
+all characteristics of 
+membership
+ feedback data makes SVR a more appropriate choice than linear regression, which assumes linearity and normality, or ARIMA, which relies on a single univariate time series rather than the multi-feature inputs available in this system.
+2.5.2 Practical Implementations in Social Forecasting
+Recent empirical applications confirm SVR's practical suitability for social forecasting tasks with the data profile relevant to this study. Zhang et al. (2023) used SVR to forecast retail demand from sparse weekly sales logs, outperforming ARIMA by 22% in Mean Absolute Error on a dataset of 78 weekly observations per product category demonstrating that SVR achieves superior accuracy over classical time-series methods even when training data is limited. Khan et al. (2022) applied SVR to predict energy load from irregular smart-meter readings, achieving 94% accuracy with only eight weeks of historical data, directly validating SVR's viability for the short-history scenario faced by 
+populations
+ that have only recently adopted digital record-keeping. In the social domain most analogous to church feedback, Al-Rahmi et al. (2024) demonstrated a 31% MAE reduction for SVR over linear regression when the training set contained fewer than 200 observations
+ 
+a finding that establishes a concrete performance benchmark against which this study's results can be evaluated.
+Taken together, these applications confirm a consistent pattern: SVR thrives precisely in the conditions that characterize 
+membership
+ feedback data datasets that are small, self-reported, multi-featured, and temporally ordered. Despite this strong evidential basis for SVR's suitability, no published study has applied SVR to 
+membership
+ engagement data for the purpose of generating forward-looking pastoral alerts. This absence constitutes the primary research gap that the current study addresses.
+2.6 Critical Analysis of Existing Literature
+A critical synthesis of the literature reviewed in this chapter reveals three persistent structural limitations that explain why predictive analytics has not yet been successfully applied to 
+membership
+ engagement in resource-constrained African contexts, and that collectively define the research opportunity addressed by this study.
+The first limitation is a Western-centric design bias. The most methodologically sophisticated work on 
+membership
+ analytics
+ 
+including the LifeWay Research (2024) pilot and the predictive retention models reviewed by Chaves and Anderson (2022) assumes operational contexts characterized by stable internet connectivity, high digital literacy among church staff, existing CRM infrastructure, and annual technology budgets exceeding USD 10,000. These conditions describe approximately 15% of global 
+populations
+, predominantly in North America and Western Europe (ITU, 2024). They do not describe the 82% of Kenyan 
+populations
+ that, according to Mugambi and Theuri (2021), currently rely on paper registers or WhatsApp groups as their primary record-keeping infrastructure. Analytical tools designed for the former context are structurally inapplicable to the latter without fundamental architectural redesign.
+The second limitation is tool fragmentation. Even in the minority of African churches that have adopted digital tools, these tools operate as disconnected silos: attendance may be tracked in a Google Sheet, event RSVPs collected through a WhatsApp poll, and member feedback gathered through an informal post-service conversation that is never recorded (Nwosu & Mwangi, 2025). Without a unified data architecture that aggregates these streams into a structured longitudinal dataset, no forecasting algorithm however theoretically sophisticated can generate meaningful predictions. The integrated data collection layer proposed in this study directly addresses this fragmentation by providing a single platform for attendance logging, RSVP tracking, and structured feedback collection, with all inputs automatically aggregated at the group level for feature engineering.
+The third limitation is methodological overkill in proposed solutions. Where academic researchers have proposed ML-based approaches for faith-based organizations, they have predominantly suggested deep learning architectures recurrent neural networks, transformer-based sequence models that require thousands of training observations, GPU compute resources, and specialist 
+technical expertise to deploy and maintain (Chen et al., 2023). As Nwosu and Mwangi (2025) observe, complexity is the principal barrier to technology adoption in resource-constrained settings. SVR, by contrast, requires no GPU, operates effectively with 50 to 200 training observations, is fully implemented in the widely-documented scikit-learn library, and produces interpretable outputs that non-technical church administrators can act upon without statistical training.
+2.7 Research Gaps
+The literature reviewed in this chapter establishes three specific, evidence-grounded research gaps that the proposed study is uniquely positioned to address.
+Contextual Applicability Gap. Existing predictive models for 
+membership
+ engagement have been developed for and validated exclusively in well-resourced Western churches with stable digital infrastructure, high staff digital literacy, and existing CRM systems. No validated predictive model exists for small-to-medium evangelical 
+populations
+ in urban Sub-Saharan Africa, where data is sparse, tools are fragmented, and budgets are constrained (Mugambi & Theuri, 2021; KNCC, 2024). This study addresses the gap by designing a system calibrated specifically for the Nairobi 
+membership
+ context, with data requirements, infrastructure assumptions, and cost constraints appropriate to that setting.
+Integrated Data Architecture Gap. No existing system unifies attendance records, event participation logs, and member feedback ratings into a single structured longitudinal dataset suitable for machine learning in a faith-based context. Churches collect the raw inputs for such a dataset but lack the integration architecture to make them model-ready (Nwosu & Mwangi, 2025). This study addresses the gap by developing an integrated data collection and feature engineering pipeline that aggregates all three input streams at the group level and automatically computes the lagged features required for SVR training.
+Lightweight Methodology Gap. Support Vector Regression, despite its proven efficacy on sparse, noisy, self-reported datasets analogous to church feedback (Shatte et al., 2021; Al-Rahmi et al., 2024; Zhang et al., 2023), has not been applied to 
+membership
+ engagement forecasting. Current FaithTech solutions are either too simple descriptive dashboards that cannot anticipate future trends
+ 
+or too complex deep learning systems requiring data volumes and compute resources 
+unavailable to small 
+populations
+. This study fills the gap by implementing SVR as an interpretable, lightweight alternative that operates effectively within the resource constraints of its target context.
+2.8 Summary
+This chapter has reviewed literature across four thematic
+ 
+areas theoretical foundations of predictive modeling in social systems, empirical studies on 
+membership
+ engagement and retention, machine learning applications for behavioral forecasting in non-commercial domains, and SVR as a methodological framework for sparse longitudinal data to establish the evidence base for the proposed study. The synthesis reveals a coherent and specific opportunity that existing research has not addressed.
+Theoretically, the literature establishes that SVR's epsilon-insensitive loss function and kernel-based feature mapping make it uniquely suited to the sparse, noisy, and non-linear nature of self-reported behavioral data (Smola & Schölkopf, 2004; Drucker et al., 1997). Empirically, healthcare and education applications demonstrate that SVR achieves meaningful predictive accuracy  MAE reductions of 22–31% over linear baselines with as few as 8–12 weeks of training data (Zhang et al., 2023; Al-Rahmi et al., 2024; Shatte et al., 2021). These findings directly validate the technical feasibility of applying SVR to 
+membership
+ engagement data, which shares the same structural profile: small datasets, voluntary self-reporting, and weekly temporal resolution.
+The critical gap this research fills sits at the intersection of three absences identified in the review. First, no study has applied SVR or any supervised regression model  to 
+membership
+ engagement data for the purpose of generating forward-looking pastoral alerts. The closest analogues operate in secular domains (education, retail, healthcare) with different data types, stakeholder needs, and ethical constraints. Second, no existing system integrates attendance, event participation, and qualitative feedback into a unified longitudinal dataset for predictive modeling in a faith-based context a gap that is simultaneously technical (data architecture) and institutional (pastoral culture). Third, no published solution is designed for the affordability, interpretability, and offline-capability constraints of small-to-medium African 
+populations
+. Commercial CMS platforms serve well-resourced Western churches; academic proposals assume cloud infrastructure and large datasets; neither serves the 82% of Kenyan churches that currently rely on paper registers or WhatsApp.
+By developing an SVR-based predictive system that is purpose-built for this specific intersection group-level forecasting, voluntary feedback, open-source tooling, and Nairobi-context deployment this study makes a focused and original contribution to both ICT4D and FaithTech. The next chapter details the methodology for designing, building, and evaluating this system.
+CHAPTER THREE
+SYSTEM ANALYSIS AND DESIGN
+3.1 Introduction
+This chapter presents the system analysis and design for the proposed Faith Organization Population Growth Forecasting System a web-based predictive analytics platform that uses Support Vector Regression to forecast population growth trends in faith organizations from existing longitudinal membership and attendance records. The chapter proceeds through the systematic sequence required by the project methodology: Section 3.2 describes the Agile Software Development Methodology; Section 3.3 presents a four-dimensional feasibility study; Section 3.4 documents the requirements elicitation process including data collection instruments and sampling strategy; Section 3.5 presents key findings from primary data analysis; Section 3.6 specifies functional and non-functional system requirements; Section 3.7 presents requirements analysis and modeling including the use case diagram; and Sections 3.8 and 3.9 document the logical and physical design respectively. All design decisions are grounded in findings from the literature review in Chapter 2 and in data collected directly from church stakeholders.
+3.2 Systems Development Methodology
+This study adopts the Agile Software Development Methodology, specifically a Scrum-inspired framework, as the primary development approach. Agile is a family of iterative and incremental software development methodologies that prioritize adaptive planning, continuous stakeholder feedback, and delivery of working software in short development cycles called sprints (Newman, 2023). Agile was selected over the Waterfall model for three reasons directly relevant to this project. First, the requirements for a machine learning system are inherently emergent: the behavior of the SVR model during training its accuracy on different feature combinations, its sensitivity to training data volume cannot be fully anticipated during the requirements elicitation phase and must be discovered through iteration. Second, the pastoral context of the system demands continuous validation with end-users: dashboard designs that seem intuitive to the developer may be opaque to a pastor with limited technical background, and only iterative usability testing can surface this gap. Third, the six-month project timeline is well-suited to Agile's sprint structure, enabling working software to be demonstrated at each sprint review rather than only at project completion.
+The development process is structured into six one-month sprints
+ as detailed in Table 3.1
+. 
+Table 3.1
+.
+ 
+Planned Sprint Schedule
+Sprint
+Month
+Focus
+Key Deliverables
+Sprint 1
+Dec 2025 – Jan 2026
+Requirements & Setup
+Requirements finalization, data collection instrument approval, development environment configured, PostgreSQL schema migrated, GitHub repository initialized
+Sprint 2
+February 2026
+Data Collection Modules
+JWT authentication system, attendance logger UI, RSVP module, Google Forms integration, group management API routes
+Sprint 3
+March 2026
+Feature Engineering Pipeline
+Lagged variable computation, node-cron scheduler (Sunday 02:00 EAT), features table population, unit tests for pipeline functions
+Sprint 4
+April 2026
+SVR Forecasting Engine
+Python FastAPI microservice, SVR training pipeline, GridSearchCV tuning, POST /predict endpoint, joblib model serialization
+Sprint 5
+May 2026
+Dashboard & Integration
+Pastoral dashboard (Recharts), alert generation module, full system integration, usability evaluation with two partner churches
+Sprint 6
+May – June 2026
+Testing & Documentation
+SVR vs baseline comparison (MAE, RMSE), SUS usability evaluation, final report preparation, submission
+3.3 Feasibility Study
+A feasibility study was conducted prior to the design phase to assess the viability of the proposed system across four critical dimensions: technical, economic, operational, and legal
+. Table 3.
+2
+ summarizes the overall findings.
+Table 3.
+2
+. Feasibility Study Summary
+Dimension
+Assessment
+Basis
+Verdict
+Technical
+React.js, Node.js, Python FastAPI, PostgreSQL stack successfully installed and tested. SVR predictions returned in <3s. node-cron scheduler functional.
+Preliminary stack tests in development environment
+Feasible
+Economic
+Total budget KES 9,383 (internet data KES 6,000; documentation KES 2,530; contingency KES 853). All software open-source. Cloud hosting free-tier.
+Project budget in Appendix II
+Feasible
+Operational
+100% of respondents want 1–3 month forecasts in plain language. System is web-based, mobile-responsive, requires no installation.
+Questionnaire findings (n=7)
+Feasible
+Legal
+Designed from inception to comply with Kenya Data Protection Act (2019): group-level only aggregation, consent-based collection via Google Forms, HTTPS, no PII in ML pipeline.
+DPA 2019 compliance review
+Feasible
+3.3.1 Technical Feasibility
+The proposed system is technically feasible given the availability of mature, open-source, and well-documented technologies across all required layers. The frontend will be developed using React.js 18 with Vite and Tailwind CSS, providing a production-grade, mobile-responsive interface. The backend API will be implemented using Node.js 20 with Express.js 4, a widely-deployed combination for RESTful service development. 
+The database will use 
+PostgreSQL 15
+, implemented via Prisma ORM, for structured data storage during the prototype and evaluation phases
+. The SVR forecasting engine will be implemented in Python 3.11 using scikit-learn 1.4, which provides a production-ready, GPU-independent SVR implementation that operates effectively on the small-to-medium dataset profile of church feedback data. All components are fully compatible with Render's free-tier cloud hosting platform, eliminating infrastructure costs.
+The critical technical justification for SVR specifically is its ability to achieve strong generalization from limited training data. Small-to-medium Kenyan 
+populations
+ that have been collecting digital attendance records for six to twelve months will have approximately 26 to 52 weekly observations per group a dataset size at which deep learning models cannot train reliably but at which SVR has been demonstrated to achieve meaningful predictive accuracy in analogous applications (Shatte et al., 2021; Al-Rahmi et al., 2024). Development and testing will be conducted on a personal laptop with an Intel Core i5 processor and 16 GB RAM no GPU or cloud compute resource is required. The project is therefore assessed as technically feasible.
+3.3.2 Economic Feasibility
+The project is economically feasible with minimal direct financial expenditure. All software tools, libraries, and frameworks used in the system are open-source and freely available under MIT or Apache 2.0 licenses. The complete technology stack
+ 
+React, Node.js, Python, scikit-learn, PostgreSQL, and Render hosting incurs zero licensing costs. The primary project expenditures are administrative: KES 6,000 has been allocated for internet data bundles to support virtual stakeholder interviews over the four-month data collection period; KES 2,530 covers the printing and spiral binding of project documentation drafts and the final report; and a contingency reserve of KES 853 representing 10% of total costs has been included to cover unforeseen expenditures. The total estimated project budget is KES 9,383, as detailed in Appendix II. Critically, the system 
+itself will be zero-cost for end-users, ensuring that economic accessibility to small 
+populations
+ is maintained throughout any future deployment.
+3.3.3 Operational Feasibility
+The system addresses a well-documented and urgent operational need in religious organizations. Chaves and Anderson (2022) found that 70% of church dropouts leave silently without formal notice, and KNCC (2024) reports that 68% of new believers in Kenya disengage within six months citing lack of follow-up. Both findings indicate that current pastoral workflows are operationally reactive: by the time disengagement is detected, meaningful intervention has often become impossible. The proposed system converts this reactive cycle into a proactive one by providing 4 to 12-week advance warning of group-level engagement decline.
+Operationally, the system is designed for adoption by non-technical church staff. The mobile-responsive web interface requires no app store installation and functions on any modern smartphone browser. The attendance logging form is designed for completion by ushers during or immediately after a service a two-minute task requiring no technical training. The pastoral dashboard presents forecasts as plain-language alerts rather than statistical outputs, enabling pastors to interpret and act on predictions without quantitative expertise. The voluntary nature of the member feedback component ensures that the system respects member autonomy and does not impose participation requirements that could generate resistance to adoption.
+3.3.4 Legal and Regulatory Feasibility
+The project adheres to the legal and ethical standards applicable to personal data processing in Kenya. All data collection and processing activities are designed to comply with the principles established by Kenya's Data Protection Act (2019), specifically: purpose limitation data is collected solely for the purpose of generating group-level pastoral engagement forecasts and is not used for financial analysis, marketing, or any other secondary purpose; data minimization only the minimum data required for group-level modeling is retained (attendance headcounts, aggregated satisfaction ratings, and RSVP counts), with no names, national identification numbers, phone numbers, or other personal identifiers stored in any analytical table; and integrity and confidentiality  all data transmissions are secured via HTTPS and database access is restricted by role-based controls enforced at the API layer.
+The system's most critical legal safeguard is the structural exclusion of personally identifiable information from the machine learning pipeline. The features, forecasts, and alerts tables contain only group-level identifiers; no individual member_id exists in any analytical table. This architectural design means that even if the database were compromised, no individual member could be identified or profiled from the analytical data. The design also ensures compliance with the KNCC (2024) pastoral confidentiality guidelines applicable to member data in Kenyan evangelical churches.
+3.4 Requirements Elicitation
+3.4.1 Data Collection
+Requirements for the proposed system were elicited through two complementary primary methods: semi-structured interviews and a structured questionnaire, supplemented by document review as a secondary source
+. This triangulation approach was adopted to ensure that system requirements reflect the perspectives of both pastoral leaders (qualitative depth through interviews) and a broader sample of church staff (quantitative breadth through questionnaires), supplemented by secondary evidence from published literature and existing CMS documentation reviewed in Chapter 2.
+Semi-structured interviews were conducted with seven participants four pastors and three church administrators selected via purposive sampling from evangelical 
+populations
+ in Nairobi County. The interview guide attached as Appendix III, comprised twelve questions organized into four sections: current data management practices, early disengagement detection, predictive system requirements, and ethical boundaries. Each interview was conducted virtually via Google Meet over 30 to 45 minutes,
+ 
+and transcribed for thematic analysis. Participants represented churches of three sizes: small (under 150 members), medium (150 to 500 members), and large (over 500 members), ensuring that requirements reflect diverse operational contexts.
+A structured questionnaire comprising nine closed-ended and Likert-scale items was distributed digitally via Google Forms to the same seven participants following their interviews, achieving a 100% completion rate. The questionnaire was designed to quantify the frequency of specific digital practices, satisfaction levels with current tools, and feature preferences for the proposed system.
+Document review was conducted on Kenya's Data Protection Act (2019), the KNCC (2024) Digital Discipleship Guidelines, and the publicly available documentation for Planning Center and Breeze Church Management Systems. These sources provided authoritative context for the compliance requirements and competitive positioning of the proposed system.
+3.4.2 Sampling Techniques and Sample Size
+Two distinct sampling strategies were employed corresponding to the study's two primary data collection instruments. The combined approach purposive sampling for qualitative depth and convenience sampling for broader descriptive coverage is consistent with mixed-methods research design guidance in information systems research (Creswell & Creswell, 2018).
+Target Population
+The target population for this study comprises church leaders and administrators in small-to-medium evangelical 
+populations
+ in Nairobi County, Kenya, responsible for tracking member attendance, organizing growth groups, and making pastoral planning decisions. Based on KNCC (2024) registration data, there are approximately 340 registered evangelical 
+populations
+ in Nairobi County with active growth group structures, constituting the accessible population for this study. The study targets a purposive sample of five to ten churches with 100 to 500 members that maintain digital attendance and membership records exportable in CSV or Excel format
+.
+Instrument 1: Semi-Structured Interviews (Purposive Sampling)
+For the semi-structured interview phase, purposive sampling was used to select seven participants
+;
+ four pastors and three church administrators from diverse 
+populations
+ representing a range of church sizes (small: under 100 members; medium: 100–500 members; large: over 500 members) and denominational backgrounds. Purposive sampling is appropriate when the research requires in-depth information from individuals who possess specific knowledge or experience directly relevant to the study objectives (Sowon et al., 2024). The selection criteria required that each participant: (a) held a pastoral or administrative leadership role for a minimum of two years; (b) had direct responsibility for tracking attendance or managing growth groups; and (c) had experience identifying member disengagement in their congregation. All seven participants met these criteria and consented to participation prior to data collection.
+Instrument 2: Structured Questionnaire (Convenience Sampling)
+For the structured questionnaire phase, convenience sampling was employed to reach a broader group of church staff and leaders. The questionnaire was distributed digitally via Google Forms. A total of seven complete responses were received, representing a 100% completion rate among participants who accessed the form. While the sample size is modest, it is appropriate for the descriptive and confirmatory purpose of this instrument to quantify the frequency of digital tool usage, satisfaction levels, and feature preferences already identified qualitatively through interviews. This sample size is consistent with comparable requirements-elicitation studies in small-scale FaithTech and ICT4D research (Mugambi & Theuri, 2021).
+Table 3.
+3
+.
+ Data Collection Sample Summary
+Respondent Category
+Instrument
+Sample Size
+Sampling Method
+Pastors (small, medium, large churches)
+Semi-structured interview
+4
+Purposive
+Church administrators
+Semi-structured interview
+3
+Purposive
+Church staff and leaders
+Structured questionnaire
+7
+Convenience
+TOTAL
+14
+3.4.3 Ethical Considerations
+This study was conducted in accordance with the ethical standards applicable to research involving human participants at Jomo Kenyatta University of Agriculture and Technology. The following ethical safeguards were observed throughout the data collection, system design, and evaluation phases of the project.
+Informed Consent. All interview and questionnaire participants were provided with a written participant information sheet prior to data collection, explaining the purpose of the study, the voluntary nature of participation, and the right to withdraw at any time without consequence. Written consent was obtained from all interview participants before each session. Questionnaire 
+respondents were presented with a consent statement on the first page of the Google Form, and submission was treated as implicit consent.
+Anonymity and Confidentiality. Interview participants are identified in this report only by role (e.g., Pastor 1, Administrator 2) with no names, church names, or denominational identifiers disclosed. Questionnaire responses were collected anonymously
+ 
+no email addresses or IP addresses were recorded. Raw interview transcripts and questionnaire response files are stored on a password-protected device accessible only to the researcher and are not included in public-facing appendices.
+Group-Level Prediction and Non-Profiling Guarantee. A critical ethical commitment of this research is that the SVR forecasting model operates exclusively on group-level aggregated data. No personally identifiable information (PII)
+ 
+including names, phone numbers, national ID numbers, or individual attendance records is stored in or passed to the feature engineering pipeline or the SVR model. All data entered into the system is aggregated at the cohort level (e.g., 'Youth Group,' 'New Believers') before feature computation. This design choice was validated during requirements elicitation, where 100% of participants stated zero tolerance for any system that profiles individuals. The database schema enforces this guarantee structurally: the features, forecasts, and alerts tables contain only group_id foreign keys; no member_id column exists in any analytical table.
+Voluntary Feedback and Data Minimization. Member-submitted feedback (sentiment ratings and optional text reflections) is entirely voluntary. No member is required to submit feedback, and non-submission does not affect their participation in group activities. Optional text feedback fields are stripped of any identifying language at the API layer before storage, using server-side validation that rejects entries containing phone number patterns or proper nouns. This design ensures the system collects only the minimum data necessary to generate group-level forecasts, consistent with the data minimization principle of Kenya's Data Protection Act (2019).
+Compliance with Kenya's Data Protection Act (2019). The system design adheres to the principles of Kenya's Data Protection Act (2019), specifically: purpose limitation (data is collected solely for pastoral forecasting, not marketing or financial analysis); data minimization (only attendance counts, aggregated ratings, and RSVP counts are stored); storage limitation (historical data older than 36 months may be archived or deleted without affecting model accuracy); and integrity and 
+confidentiality (HTTPS encryption for all data transmission; PostgreSQL role-based access preventing unauthorized queries). While this prototype does not process data at a scale requiring formal registration with the Office of the Data Protection Commissioner, the design patterns adopted ensure the system is compliant from inception.
+3.5 Data Analysis
+3.5.1 Key Findings from Interviews
+Thematic analysis of the seven transcribed interviews identified four dominant themes that directly shaped the system's functional requirements and design constraints.
+The first theme was fragmented data ecosystems. All seven participants described managing attendance, event, and feedback data across disconnected platforms with no integration between them. Pastor 2 stated that attendance was tracked in one spreadsheet, event RSVPs in a separate Google Form, and member feedback through informal WhatsApp conversations, making it impossible to see patterns across the three data streams. This finding directly motivated the integrated data collection architecture described in Section 3.8, which unifies all three inputs within a single platform.
+The second theme was the reactive nature of current pastoral care. All seven participants reported becoming aware of member disengagement only after the individual had already departed silently. Administrator 1 noted spending approximately three hours each Monday compiling attendance records from multiple sources, leaving no time for trend analysis. This reactive cycle was universally identified as the primary operational gap the proposed system should address, confirming the 4 to 12-week forecast horizon as the most actionable prediction window.
+The third theme was strong demand for predictive capability with a specific forecast horizon preference. All seven participants expressed enthusiasm for a system that could identify at-risk groups before disengagement became departure. Pastor 3 explained that a 1 to 3-month forecast horizon would allow sufficient time to organize targeted pastoral interventions such as reconnection dinners or personal follow-up calls, while weekly predictions were considered too volatile and annual predictions too distant for actionable planning.
+The fourth theme was non-negotiable ethical boundaries around individual privacy. All seven participants stated without exception that any predictive system must operate at the group level only and must never identify or flag individual members. This requirement is architecturally enforced in the system design through the structural exclusion of individual member identifiers from all analytical database tables.
+3.5.2 Key Findings from Questionnaire
+Analysis of the seven questionnaire responses produced the following quantitative findings, which corroborate and extend the qualitative themes identified through interviews.
+ Figure 3.1 presents a summary of the five key findings
+Figure 3.1. Summary of Key Questionnaire Findings (n = 7). Source: Google Forms questionnaire..
+On current digital record-keeping practices (Figure 3.1), 71% of respondents confirmed their church maintains digital attendance records in spreadsheets or a CMS, while 43% also maintain digital event participation records. The remaining 29% rely primarily on paper registers, confirming that the study's target sample churches with existing digital records represents a realistic and accessible subset of Nairobi evangelical 
+populations
+.
+Figure 3
+.
+2
+.
+ Current data collection practices among respondents (n=7).
+On satisfaction with current digital tools (Figure 3.2), 71% rated their satisfaction as low or neutral with a mean score of 2.8 out of 5, citing fragmentation between platforms and the absence of any predictive or trend-analysis capability as the primary sources of dissatisfaction.
+Figure 3.
+3
+.
+ 
+Satisfaction with current digital tools (mean = 3.0/5, n=7).
+On predictive analytics requirements (Figure 3.3), 86% of respondents expressed strong interest in a predictive forecasting capability, with 71% preferring a one to three-month forecast horizon and 86% preferring plain-language alerts over statistical charts. This finding shaped the forecast horizon parameters specified in FR4.2 and the alert wording conventions described in FR5.3 and FR5.4.
+Figure 3.
+4
+.
+ Preferred forecast horizon (n=7).
+On privacy requirements (Figure 3.5), 100% of respondents indicated they would only adopt a system that uses group-level aggregation with zero tolerance for individual profiling, confirming that the architectural decision to exclude individual identifiers from analytical tables is a hard adoption requirement.
+Figure 3.
+5
+.
+ Privacy requirement: group-level aggregation only (n=7).
+On adoption likelihood (Figure 3.6), 86% responded 'Likely' or 'Very Likely' when asked whether they would adopt the system if it were free, web-based, and mobile-friendly, with 14% responding 'Neutral', confirming that the economic and technical accessibility parameters are aligned with actual user requirements
+. 
+Figure 3.
+6
+.
+ System adoption likelihood if free, web-based and mobile-friendly (n=7).
+3.5.3 Summary of key findings
+Table 3.
+4
+.
+ 
+Summary of Key Questionnaire Findings
+Question / Finding
+Key Result
+Implication for System Design
+Q1: Current data collection practices
+71% maintain digital attendance records; 43% maintain digital event records; 29% rely on paper registers
+Target sample is churches with existing digital records in CSV/Excel format; paper-only churches are outside scope
+Q3: Satisfaction with current digital tools
+71% rated satisfaction Low or Neutral; mean = 2.8/5
+Strong demand for an integrated, unified platform that replaces fragmented disconnected tools
+Q5: Preferred forecast horizon
+71% prefer 1-3 month horizon; 14% weekly; 14% annual
+Forecast horizons of h = 4 weeks and h = 8-12 weeks are the primary design targets (FR4.2)
+Q7: Privacy requirement
+100% require group-level aggregation only; 0% tolerate individual profiling
+Exclusion of member_id from all analytical tables is a hard adoption requirement, not merely best practice
+Q8: Adoption likelihood
+57% Very Likely; 29% Likely; 14% Neutral; 0% Unlikely
+86% positive adoption intent confirms free, web-based, mobile-friendly deployment is the correct strategy
+3.6 System Specification
+3.6.1 Functional Requirements
+The functional requirements listed in Table 3.
+5
+ were derived from the thematic analysis of interview data, the quantitative findings of the questionnaire, and the architectural decisions established through the literature review. They are organized by system module and assigned priority ratings reflecting their criticality to the core research objectives.
+Table 3.5
+.
+ Functional Requirements Specification
+Module / Requirement ID
+Requirement Description
+Priority
+Module 1: Data Ingestion Module
+FR1.1
+CSV/Excel Upload — secure file upload interface accepting attendance and membership exports from any digital tool church currently uses
+High
+FR1.2
+Data Validation — system validates upload structure (required columns, date formats, numeric fields), flags missing values, and generates a validation report before data is accepted
+High
+FR1.3
+PII Stripping — upload pipeline automatically removes columns containing names, phone numbers, email addresses, or national ID numbers before storing records
+High
+FR1.4
+Upload Preview — data preview screen showing first 10 rows post-cleaning for admin to confirm before committing to database
+Medium
+FR1.5
+Mobile-responsive interface built with React.js and Tailwind CSS; functional on smartphones, tablets, and desktops
+High
+Module 2: Core Management and Storage Module (Database)
+FR2.1
+Group Categorization — system organizes congregation into named cohorts (e.g., Youth Group, New Believers, Young Families)
+High
+FR2.2
+Anonymization Engine — all records aggregated at group level before storage; no member_id in features, forecasts, or alerts tables
+High
+FR2.3
+Historical Data Repository — time-stamped attendance records stored for minimum 24 months to support ML training
+High
+FR2.4
+PostgreSQL database with normalized schema enforcing referential integrity via foreign keys and uniqueness constraints on (group_id, week_date)
+High
+Module 3: Feature Engineering Pipeline (Backend)
+FR3.1
+Data Aggregator — retrieves raw attendance records per group and sorts chronologically after each new upload
+High
+FR3.2
+Lagged Variable Generator — computes rolling 4-week attendance average, 8-week linear trend slope, weekly participation rate, and feedback average per group
+High
+FR3.3
+Node.js/Express.js RESTful API for all data ingestion, transformation, and retrieval operations
+High
+FR3.4
+Automated weekly feature recomputation triggered after each new data upload
+Medium
+Module 4: SVR Forecasting Engine (ML Microservice)
+FR4.1
+Automated SVR model retraining using scikit-learn with GridSearchCV hyperparameter optimization (C, gamma, epsilon) and TimeSeriesSplit cross-validation
+High
+FR4.2
+Trend Predictor — forecasts group-level attendance headcount across three user-selectable horizons: 1 week, 4 weeks, and 8–12 weeks ahead, with 95% bootstrapped confidence intervals
+High
+FR4.3
+Accuracy Scoring — computes MAE and RMSE on 20% holdout test set for SVR versus OLS linear regression and ARIMA(1,1,1) baselines
+High
+FR4.4
+FastAPI microservice exposing POST /predict endpoint; serializes trained models with joblib per congregation group
+High
+Module 5: Pastoral Dashboard (Decision Interface)
+FR5.1
+Historical Dashboard — descriptive line charts displaying 12-week attendance trends per group using Recharts
+High
+FR5.2
+Predictive Visualization — forecast line with shaded confidence cone displayed alongside historical data on the same chart
+High
+FR5.3
+Early Warning Alerts — amber banner notification when forecast indicates engagement drop exceeding 15% within 4 weeks
+High
+FR5.4
+Actionable Recommendations — plain-language pastoral intervention suggestions displayed as dismissable cards
+High
+FR5.5
+React-based interface with JWT authentication and role-based access control: admin, pastor, and analyst roles with distinct permissions
+High
+Note. 
+FR = Functional Requirement. Priority ratings: High = required for system to fulfil its core purpose; Medium = enhances system utility but does not impede core function if deferred.
+3.6.2 Non-Functional Requirements
+Table 3.
+6
+ specifies the quality attributes the system must meet to be usable, secure, reliable, and accessible in the target pastoral context. Non-functional requirements were derived from the literature review findings, the feasibility study, and the ethical considerations
+.
+Table 3.
+6
+.
+ 
+Non-Functional Requirements Specification
+Category
+ID
+Requirement Description
+Acceptance Criteria
+Priority
+Performance
+Performance
+NFR-P1
+Dashboard load time
+<2 seconds on broadband
+High
+NFR-P2
+SVR prediction response time
+<5 seconds per request
+High
+NFR-P3
+Concurrent user support
+≥10 simultaneous users
+Medium
+NFR-P4
+Data handling capacity
+Up to 5,000 records
+High
+Usability
+Usability
+NFR-U1
+System Usability Scale (SUS) score
+≥68 (above average)
+High
+NFR-U2
+Intuitive navigation for non-technical users
+No training required
+High
+NFR-U3
+Responsive design across devices
+Desktop, tablet, mobile
+High
+Security
+Security
+NFR-S1
+Role-based access control
+Admin, pastor, usher roles
+High
+NFR-S2
+JWT token authentication
+All endpoints protected
+High
+NFR-S3
+HTTPS data encryption in transit
+TLS 1.2 or higher
+High
+NFR-S4
+No PII in ML training pipeline
+Features table: group IDs only
+High
+NFR-S5
+Input validation and sanitization
+Injection attacks prevented
+High
+Reliability
+Reliability
+NFR-R1
+System uptime during operating hours
+>99%
+High
+NFR-R2
+Graceful degradation: fallback to linear regression if SVR model unavailable
+Dashboard remains functional
+High
+NFR-R3
+Append-only audit log — forecast records cannot be modified or deleted
+No UPDATE/DELETE on forecasts
+High
+Accessibility
+Accessibility
+NFR-A1
+WCAG 2.1 Level AA compliance
+Color contrast, keyboard nav
+Medium
+NFR-A2
+Screen reader compatibility
+ARIA labels on all controls
+Medium
+Note. 
+NFR = Non-Functional Requirement. SUS = System Usability Scale. PII = Personally Identifiable Information. WCAG = Web Content Accessibility Guidelines.
+3.6.3 Requirements Traceability Matrix
+Table 3.7
+..
+ 
+Requirements Traceability Matrix
+Req. IDs
+Description
+Specific Objective
+Research Question
+Module
+NFR Link
+FR1.1–FR1.5
+Secure data ingestion — CSV/Excel upload, validation, PII stripping, preview
+SO1: Identify longitudinal indicators; SO3: Develop responsive dashboard
+RQ1: Key longitudinal indicators; RQ3: Dashboard approach
+Module 1: Data Ingestion
+NFR-U1, NFR-U3, NFR-S4, NFR-A1
+FR2.1–FR2.4
+Group-level anonymized data storage — PostgreSQL, Prisma ORM, no member_id
+SO2: Implement SVR model; SO3: Integrated system
+RQ1: Key longitudinal indicators
+Module 2: Database
+NFR-S4, NFR-R3
+FR3.1–FR3.4
+Automated feature engineering — rolling avg, slope, participation rate
+SO2: Design and implement SVR model
+RQ1: Key longitudinal indicators
+Module 3: Feature Engineering
+NFR-P2, NFR-R1
+FR4.1–FR4.4
+SVR engine with GridSearchCV, TimeSeriesSplit CV, MAE/RMSE vs OLS and ARIMA
+SO2: SVR model; SO4: Test and validate accuracy
+RQ2: SVR prediction accuracy
+Module 4: SVR Engine
+NFR-P2, NFR-R2
+FR5.1–FR5.5
+Pastoral dashboard — 12-week chart, forecast, amber alerts, recommendations, JWT RBAC
+SO3: Responsive dashboard; SO4: Validate usability
+RQ3: Dashboard approach; RQ4: Pastoral usability
+Module 5: Dashboard
+NFR-U1, NFR-U2, NFR-S1, NFR-S2
+Note. 
+SO = Specific Objective from Section 1.6.2. RQ = Research Question from Section 1.7. NFR = Non-Functional Requirement from Table 3.5. Each functional requirement group is traceable to at least one specific objective, one research question, one system module, and one non-functional requirement, ensuring complete requirements coverage from stakeholder need to architectural implementation.
+3.7 Requirements Analysis and Modelling
+The requirements gathered in Section 3.6 were analyzed to identify inter-module dependencies, potential conflicts, and architectural constraints. The analysis confirmed a strict dependency ordering: data must be ingested through Module 1 before features can be computed by Module 3; Module 4 can only generate forecasts after Module 3 has computed sufficient lagged features; and Module 5 can only display forecasts after Module 4 has produced them. This ordering is enforced operationally through the weekly cron job scheduling described in FR3.4 and the sequential pipeline execution described in Section 3.8.2.
+A potential conflict was identified between FR2.2 (anonymization) and the requirement for group-level trend analysis: if groups are too small, even aggregated statistics could theoretically identify individual members through inference. This conflict is resolved by enforcing a minimum group size of five members before any group-level feature computation is performed, and by suppressing forecast generation for groups below this threshold until sufficient membership is recorded.
+3.7.1 System Actors
+Table 3.
+8
+. System Actors and Interactions
+Actor
+Role
+System Interaction
+Church Administrator
+Data manager and system operator
+Exports attendance/membership CSV from church's existing tool; uploads to system; manages group configuration; manages user accounts
+Pastor
+Primary decision-maker
+Views engagement dashboard, forecast charts, alert banners, and dismisses pastoral recommendation cards; selects forecast horizons
+Data Analyst
+Technical validator
+Views detailed model accuracy metrics (MAE, RMSE vs baselines); accesses raw feature data for validation purposes
+SVR Microservice (System Actor)
+Automated ML engine
+Receives feature vectors via REST API from Node.js layer; returns forecast predictions with confidence intervals; does not interact directly with human actors
+3.7.2 Use Case Diagram
+Figure 3.7 illustrates the primary interactions between the system's three human actors Church Administrator, Pastor, and Data Analyst and the system's core use cases. The Church Administrator manages data uploads, validation, and group configuration. The Pastor accesses forecast dashboards, views alerts, and dismisses recommendation cards. The Data Analyst accesses model performance metrics. The SVR Microservice actor represents the automated forecasting engine invoked by the system during forecast generation
+Figure 3.
+7
+.
+ 
+Use Case Diagram for the 
+Membership
+ Management and Forecasting System
+Note
+.
+The <<include>> relationship between 'View Forecast' and the SVR Forecast Engine reflects the system's dependency on the Python ML microservice for all prediction outputs
+.
+3.8 Logical Design
+3.8.1 System Architecture
+The proposed system will employ a four-tier client-server architecture augmented by a dedicated machine learning microservice, as illustrated in Figure 3.8. This architecture was selected following the review of comparable implementations in Section 2.4, and will provide the modularity, scalability, and ethical data separation required for this project.
+Tier 1
+-
+ Presentation Layer will be built with React.js 18, Vite, and Tailwind CSS. This tier will handle all user interactions: the attendance logging form, the event RSVP form, the member feedback survey, and the pastoral dashboard with its historical charts, forecast visualizations, and alert banners. The React frontend will communicate exclusively with the Node.js API layer via authenticated HTTPS requests using JSON payloads, and will never directly access the database or ML service.
+Tier 2
+ -
+ Application Layer will comprise a Node.js/Express.js REST API that will manage JWT authentication, role-based access control, CRUD operations for all data entities, the weekly feature 
+engineering cron job, and orchestration of calls to the Python ML microservice. This tier will also host the Alert Generation Module that will evaluate forecast outputs against the 15% decline threshold and create pastoral alert records when triggered.
+Tier 3 
+- 
+Machine Learning Layer will be implemented as a Python FastAPI microservice deployed independently. This microservice will house the scikit-learn SVR Engine configured with the Radial Basis Function kernel and GridSearchCV hyperparameter optimization. The service will load serialized model weights from the .joblib vault, apply the trained StandardScaler to input features received via REST API calls, generate point predictions with bootstrapped 95% confidence intervals, and return structured JSON responses to the Node.js orchestration layer.
+Tier 4 
+- 
+Data Layer will use PostgreSQL 15 with a fully normalized relational schema implemented via Prisma ORM. The schema will enforce the system's core ethical constraint structurally: the features, forecasts, and alerts tables will contain only group_id foreign keys, with no individual member identifiers. This means that even direct database access will not reveal individual-level engagement patterns, ensuring compliance with Kenya's Data Protection Act (2019
+.
+Figure 3.
+8
+.
+ 
+4
+-tier 
+architecture diagram
+3.8.2 Control Flow and Process Design
+The system's operations follow four sequential processes that move data from member submission through to pastoral action, as illustrated in the DFD and sequence diagrams below.
+Data Ingestion and Storage. 
+A church administrator exports historical attendance records from the church's existing digital tool (e.g., Google Sheets, a spreadsheet, or a CMS) in CSV or Excel format, and uploads the file through the React interface. The Node.js API validates the upload structure, checks for required columns, enforces date format consistency, strips any columns containing personal identifiers, and aggregates records at the group level before writing cleaned records to PostgreSQL. A validation report is returned to the administrator confirming the number of records accepted and any rows flagged for review
+.
+Feature Engineering and Model Training. 
+After each new upload, the feature engineering pipeline is triggered. The pipeline retrieves the group's full chronological record set from PostgreSQL, computes four lagged features — rolling 4-week attendance average, 8-week linear trend slope, weekly participation rate, and feedback average where available — and writes the computed features to the features table. On the first Sunday of each month, the full training pipeline executes: the accumulated features table is read, an 80/20 temporal train-test split is applied, GridSearchCV with TimeSeriesSplit cross-validation tunes the SVR hyperparameters, and the trained model and its associated StandardScaler are serialized to disk using joblib.
+Forecast Generation and Alert Creation. When a pastor accesses the Group Detail page for a specific cohort, the React frontend calls the Node.js forecast endpoint. The API retrieves the group's most recently computed features, forwards them to the Python FastAPI microservice's POST /predict endpoint, and receives a JSON response containing the predicted headcount, confidence interval lower bound, and confidence interval upper bound for the requested horizon. The API persists this forecast to the forecasts table and evaluates whether the predicted headcount represents a decline of more than 15% relative to the current rolling average; if so, it creates a corresponding alert record in the alerts table with a contextual plain-language message and pastoral recommendation.
+Dashboard Visualization and Action. The pastoral dashboard renders a Recharts ComposedChart displaying 12 weeks of historical attendance as a solid line and the forecast as a dashed line with a shaded confidence cone. If an active, unacknowledged alert exists for the group, an amber banner is displayed at the top of the Group Detail page containing the alert message and the recommended pastoral intervention. The pastor can dismiss the alert once action has been taken, which sets the acknowledged flag on the alert record and removes the banner.
+Figure 3
+.
+9
+.
+ Level 0 Context Data Flow Diagram.
+Figure 3.
+10
+.
+ Level 1 Data Flow Diagram.
+Figure 3.
+1
+1
+.
+ Sequence diagram for the forecast request process.
+Figure 3.12
+.
+ Activity Diagram — Forecast Request and Alert Control Flow
+3.8.3 SVR Model Specification and Validation Strategy
+This section specifies the Support Vector Regression model configuration, kernel selection rationale, hyperparameter tuning approach, training data strategy, and validation methodology. This level of methodological specification is necessary to distinguish the proposed system from a descriptive analytics tool and to satisfy the empirical evaluation requirements of this project.
+Kernel Selection Rationale
+The Radial Basis Function (RBF) kernel was selected based on three evidence-based criteria. First, the RBF kernel is the standard choice for datasets with non-linear, non-monotonic relationships between features and outcomes — a characteristic of church attendance data, where satisfaction ratings and attendance interact non-linearly depending on seasonal context. Second, prior SVR applications to analogous sparse social datasets (Al-Rahmi et al., 2024; Shatte et al., 2021) uniformly reported superior accuracy with RBF over linear or polynomial kernels when training set sizes were under 200 observations. Third, the RBF kernel requires only two hyperparameters (C and gamma), reducing overfitting risk during tuning compared to polynomial kernels
+.
+Hyperparameter Specification and Tuning
+Three SVR hyperparameters require tuning prior to model deployment:
+C (regularization parameter): Controls the trade-off between maximizing the margin and minimizing training error. A higher C value reduces bias but increases variance risk on small datasets. Search range: C 
+∈
+ {1, 10, 100}.
+γ (gamma — RBF kernel bandwidth): Controls the influence radius of each training example. A smaller γ creates a smoother decision boundary. Search values: γ 
+∈
+ {'scale', 'auto', 0.1, 0.01}.
+ε (epsilon — insensitive loss tube): Defines the threshold below which prediction errors are ignored. This parameter directly models the subjective noise in self-reported feedback ratings. Search range: ε 
+∈
+ {0.05, 0.1, 0.5}.
+Hyperparameters will be optimized using an exhaustive grid search (sklearn.model_selection.GridSearchCV) with Mean Absolute Error as the scoring metric, as MAE is more interpretable in the pastoral context than RMSE (an error of ±5 members is a 
+meaningful pastoral threshold regardless of its squared magnitude). The grid search will evaluate all 3 × 4 × 3 = 36 parameter combinations per group model.
+Training Data Strategy
+The 
+The SVR model will be trained on historical records sourced from five to ten partner churches in Nairobi County, supplemented by simulated longitudinal data for the initial prototype phase where real records are not yet available. Simulated data will be generated for five congregation groups over a 24-month period (104 weekly records per group, totaling 520 training observations). Simulation parameters are grounded in empirical benchmarks: baseline attendance drawn from a normal distribution calibrated against KNCC (2024) median congregation size data for Nairobi; seasonal trend components added for Easter, Christmas, and school-term boundaries; and engagement drops modeled as step-function reductions of 15 to 25% over 4 to 8 weeks, consistent with Chaves and Anderson (2022) documented disengagement trajectories.
+ 
+These parameters ensure the simulated dataset reflects real-world distributional properties rather than arbitrary random noise.
+Train-Test Split and Cross-Validation
+Model training will employ a temporal (walk-forward) split to respect the time-ordered nature of the data and prevent data leakage — a critical requirement for time-series models where shuffled splits produce artificially inflated accuracy estimates. Specifically:
+Training set: the first 80% of each group's chronologically ordered records (approximately 83 weeks of the 104-week simulated dataset per group).
+Test set: the final 20% of records (approximately 21 weeks), used exclusively for holdout evaluation and never exposed to the model during training or hyperparameter tuning.
+Cross-validation: TimeSeriesSplit with k = 5 folds applied within the training set during grid search, using expanding windows to simulate realistic deployment conditions.
+This walk-forward validation strategy is consistent with the methodology employed in comparable SVR time-series studies (Zhang et al., 2023; Khan et al., 2022) and is required to produce evaluation metrics that are comparable to published benchmarks.
+Baseline Comparison Models
+To establish whether SVR offers meaningful predictive advantage over simpler approaches, the model is evaluated against two baseline comparators on the same holdout test set: OLS Linear Regression (using the same four engineered features as the SVR model), and ARIMA(1,1,1) (using only the historical attendance sequence). The primary evaluation metric is MAE, with a target of SVR MAE at or below 80% of OLS MAE (consistent with Al-Rahmi et al., 2024). The secondary metric is RMSE. Both metrics will be reported in Chapter 4 alongside a paired t-test on per-group error distributions to confirm statistical significance.
+Table 3.
+9
+.
+ SVR Model Configuration Summary
+Parameter
+Specification
+Algorithm
+Support Vector Regression — sklearn.svm.SVR
+Kernel
+Radial Basis Function (RBF)
+C — search range
+{1, 10, 100}
+γ — search range
+{'scale', 'auto', 0.1, 0.01}
+ε — search range
+{0.05, 0.1, 0.5}
+Tuning method
+GridSearchCV — scoring = neg_mean_absolute_error, cv = TimeSeriesSplit(n_splits=5)
+Training data
+Simulated 24-month dataset: 5 congregation groups, 104 weekly records per group (n = 520 total); three forecast horizons: h=1 week (immediate), h=4 weeks (monthly), h=8 weeks (quarterly); evaluation phase uses real anonymized partner church records
+Train / test split
+80% temporal training window / 20% holdout test set — no shuffling (walk-forward validation)
+Baseline models
+Ordinary Least Squares (OLS) linear regression and ARIMA(1,1,1)
+Primary metric
+MAE — Mean Absolute Error (members); target: SVR MAE ≤ 80% of OLS MAE
+Secondary metric
+RMSE — Root Mean Squared Error (members)
+Note. 
+SVR = Support Vector Regression; RBF = Radial Basis Function; MAE = Mean Absolute Error; RMSE = Root Mean Squared Error; OLS = Ordinary Least Squares; ARIMA = Autoregressive Integrated Moving Average; EAT = East Africa Time.
+3.8.4 Design for Non-Functional Requirements
+Security requirements are addressed through three complementary mechanisms. Authentication is implemented using JSON Web Tokens with a seven-day expiry, verified by middleware applied to every protected API endpoint. Role-based access control ensures that analyst credentials access model metrics routes only, pastor credentials access dashboard and forecast routes, and admin credentials access all routes plus user management. Parameterized queries via Prisma ORM prevent SQL injection on all database operations, and all data transmissions are secured over HTTPS with TLS 1.2 or higher on the Render deployment platform.
+Reliability is addressed through graceful degradation mechanisms. If the Python SVR microservice fails to return a prediction for example because the group has insufficient historical data to have generated a trained model the Node.js API defaults to a simple linear regression forecast rather than returning an error to the dashboard, ensuring that pastors always receive a usable output. All forecast generation events and pipeline execution runs are logged to a timestamped audit log table that is append-only at the API layer, preventing tampering with historical records.
+Performance 
+optimization for low-bandwidth environments is addressed at both the frontend and backend layers. The React frontend uses lazy loading for chart components, reducing initial load time. The PostgreSQL schema includes composite indexes on (group_id, week_date) fields of the 
+attendance and features tables, accelerating range queries required for feature retrieval. Computationally intensive operations feature computation and monthly model retraining execute during off-peak hours to avoid competing with user-facing requests
+.
+3.9 Physical Design
+3.9.1 Database Design
+The physical database schema is implemented using PostgreSQL 15 via Prisma ORM for type-safe migrations and query generation. The schema is fully normalized to third normal form and structured around congregation groups as the central organizing entity, reflecting the system's group-level analysis philosophy. Seven core tables are defined: users stores hashed credentials and role assignments; groups defines congregation cohorts with category labels and minimum size thresholds; attendance stores weekly headcounts indexed by (group_id, week_date) with a unique constraint preventing duplicate records; feedback stores aggregated weekly satisfaction scores where available; features stores the four computed lagged variables per group per week; forecasts stores SVR-generated predictions with confidence interval bounds; and alerts stores derived alert records with message, recommendation, and acknowledgment status.
+The architectural enforcement of the anonymization requirement is visible in the schema: the features, forecasts, and alerts tables contain only group_id foreign keys — no member_id exists in any analytical table. The users table is completely separate from the analytical pipeline, used exclusively for authentication and role management. This schema-level separation ensures the non-profiling guarantee is architecturally enforced rather than merely policy-dependent
+Table 3.
+10
+.
+ 
+Database Tables Overview
+Table
+Primary 
+Key
+Foreign Keys
+Key Fields
+Purpose
+users
+user_id (UUID)
+None
+email, password_hash, role (ENUM: admin, pastor, usher)
+Stores hashed credentials and role assignments for authentication and RBAC. Completely separate from analytical pipeline.
+groups
+group_id (UUID)
+leader_user_id to users
+group_name, category, min_size_threshold (default: 5)
+Defines congregation cohorts. min_size_threshold suppresses forecasting for undersized groups to prevent individual inference.
+attendance
+attendance_id (UUID)
+group_id to groups; logged_by to users
+session_date, headcount, rsvp_count
+Records weekly service headcounts. Unique constraint on (group_id, session_date) prevents duplicate entries.
+features
+feature_id (UUID)
+group_id to groups ONLY
+computed_date, avg_4wk, slope_8wk, rsvp_rate, avg_feedback
+Pre-computed lagged features used as SVR model input. NO member_id — group_id only. Privacy enforced at schema level.
+forecasts
+forecast_id (UUID)
+group_id to groups ONLY
+generated_at, horizon_weeks, predicted_headcount, ci_lower, ci_upper
+SVR-generated predictions with confidence interval bounds. Append-only — no UPDATE or DELETE permitted.
+alerts
+alert_id (UUID)
+group_id to groups; forecast_id to forecasts
+message, recommendation, acknowledged (BOOLEAN)
+Alert records triggered when predicted drop exceeds 15%. Pastor sets acknowledged = true after taking action.
+Note. 
+The features, forecasts, and alerts tables contain only group_id 
+,
+ no member_id column. Individual member profiling is structurally impossible at the database level. This enforces the anonymization requirement (FR2.2, NFR-S4) regardless of application-layer behavior.
+Figure 3.
+1
+3
+..
+ Entity relationship diagram for the system database
+.
+3.9.2 User Interface Design
+The user interface is designed around three principles derived from requirements elicitation: no training required for church staff; forecasts presented in plain language rather than statistical terms; and mobile-first layout for users accessing the system via smartphones. The interface is implemented with React.js 18 and Tailwind CSS, producing a responsive layout adapting across smartphone, tablet, and desktop viewports. The color scheme uses amber for alert banners, teal for positive trend indicators, and neutral gray for historical data, providing immediate visual distinction between alert states without relying on color alone — satisfying the WCAG 2.1 AA accessibility requirement.
+The four primary screens are: the Login Screen, accepting email and password credentials and routing the user to their role-appropriate starting view; the Data Upload Screen, a clean drag-and-drop interface where administrators upload CSV or Excel exports with a validation preview before submission; the Home Dashboard, displaying a summary card for each congregation group showing last headcount, 4-week trend direction, and unread alert count; and the Group Detail page, displaying the 12-week historical and forecast Recharts line chart, the active alert banner if present, and the recommendation card with a Dismiss action
+Fig 3.1
+4
+.
+ Login page wireframe
+Fig 3.1
+5
+.
+ Attendance Logger wireframe
+Fig 3.
+16
+.
+ Home Dashboard 
+wireframe
+Fig 3.1
+7
+.
+ Forecast detail 
+wireframe
+APPENDICES
+APPENDIX
+ 
+I:
+ 
+Work Plan
+Table
+ 
+1:
+ 
+Work
+ plan
+Phase
+Activity
+Duration
+Start
+ 
+Date
+End
+ 
+Date
+1
+Proposal
+ 
+Writing
+ 
+&
+ Defense
+4 
+Weeks
+Dec
+ 
+2025
+Jan
+ 
+2026
+2
+Requirement
+ Analysis
+2 
+Weeks
+Feb
+ 
+2026
+Feb
+ 
+2026
+3
+System
+ Design
+3 
+Weeks
+Feb
+ 
+2026
+Mar
+ 
+2026
+4
+Implementation
+ 
+(Coding)
+6 
+Weeks
+Mar
+ 
+2026
+Apr
+ 
+2026
+5
+Testing
+ 
+&
+ Validation
+2 
+Weeks
+Apr
+ 
+2026
+May
+ 
+2026
+6
+Final
+ Documentation
+3 
+Weeks
+May
+ 2026
+May
+ 
+2026
+Figure
+ 
+1:
+ 
+Gantt
+ 
+Chart
+ 
+showing
+ 
+project
+ 
+timeline
+APPENDIX
+ 
+II:
+ 
+Project
+ 
+Budget
+Table
+ 
+2:
+ 
+Estimated
+ 
+project
+ 
+budget
+Item
+ 
+Description
+Unit
+ 
+Cost
+ (KES)
+Quantity
+Total Cost
+ (KES)
+1.
+ 
+Development
+ 
+Costs
+Internet
+ 
+Data
+ 
+Bundles
+ 
+(4
+ 
+Months)
+1,500
+4
+6,000
+2.
+ 
+Documentation
+ 
+Costs
+Printing
+ 
+Proposal
+ 
+(Drafts)
+300
+3
+900
+Binding
+ (Spiral)
+65
+2
+130
+Printing
+ 
+Final
+ 
+Report
+1,500
+1
+1,500
+3. 
+Miscellaneous
+Contingency (10% of Total)
+-
+-
+    853
+GRAND TOTAL
+  9,383
+APPENDIX III: Data Collection Instruments
+Appendix III-A: Semi-Structured Interview Guide
+Title: Interview Guide for Pastors and Church Administrators
+Study: Utilizing Support Vector Regression in Forecasting 
+Membership
+ Growth Trends from Longitudinal Feedback Data
+Researcher: Nzwili Victor Kyende | Supervisor: Sydney Sichangi | JKUAT, 2026
+Duration: 30–45 minutes | Setting: Virtual (Zoom/Google Meet) | Consent: Written consent obtained prior to session
+SECTION A: RESPONDENT BACKGROUND
+How long have you served in your current pastoral or administrative role?
+How many active members does your 
+church
+ have, and how many growth groups are organized within it?
+What digital tools, if any, does your church currently use for attendance tracking, member communication, or event management?
+SECTION B: CURRENT ENGAGEMENT TRACKING PRACTICES
+How do you currently track weekly attendance? In what format is this data stored paper, spreadsheet, CMS? Can you export it as a CSV or Excel file?
+When a member begins to disengage, how do you typically first become aware of it? How long after the disengagement begins does this awareness usually occur?
+What records do you currently maintain about member participation beyond Sunday attendance for example, event participation, small group attendance, or satisfaction surveys?
+SECTION C: REQUIREMENTS FOR A PREDICTIVE SYSTEM
+If a system could analyze your church's existing attendance records and predict which groups are at risk of declining membership one to three months ahead, how would that change your pastoral planning?
+What forecast horizon would be most actionable for you weekly, monthly, or quarterly predictions? Why?
+What types of early warning would be most useful a percentage drop prediction, a trend direction indicator, or a plain-language recommendation such as 'Consider organizing a reconnection event for the youth group this month'?
+Would you be comfortable uploading your church's existing attendance and membership data to a secure, web-based system for analysis? What conditions would need to be met for you to trust such a system?
+SECTION D: ETHICAL AND PRIVACY REQUIREMENTS
+Would you be comfortable with a system that analyzes attendance and feedback at the group level (e.g., 'Youth Group trend'), without any individual member profiling? Why or why not?
+What conditions would need to be met for your church to trust and adopt such a system?
+Who within your church leadership structure should have access to engagement forecasts and alerts?
+Appendix III-B: Structured Questionnaire
+Title: Church Digital Tools and Predictive Analytics Requirements Survey
+Instructions: This survey takes approximately 10 minutes. All responses are anonymous. There are no right or wrong answers please respond based on your actual experience.
+SECTION A: CURRENT PRACTICES
+Q1. What digital tools does your church currently use for attendance tracking? (Select all that apply): Paper register | Excel/Google Sheets | WhatsApp | Dedicated CMS (e.g., Planning Center) | None
+Q2. 
+For how long has your church been maintaining digital attendance records? (Select one): Less than 6 months | 6–12 months | 1–2 years | More than 2 years | We do not maintain digital records
+Q3. How satisfied are you with your current tools for tracking member engagement? (1 = Very dissatisfied, 5 = Very satisfied): 1 | 2 | 3 | 4 | 5
+SECTION B: PREDICTIVE SYSTEM REQUIREMENTS
+Q4. How important is it to be able to predict which groups may disengage in the next 1–3 months? (1 = Not important, 5 = Extremely important): 1 | 2 | 3 | 4 | 5
+Q5. What forecast horizon would be most useful for your planning? (Select one): 1 month | 2 months | 3 months | 6 months
+Q6. How would you prefer to receive engagement risk alerts? (Select one): Plain-language summary (e.g., 'Youth engagement may drop 18%') | Statistical chart | Email notification | Dashboard banner
+SECTION C: ETHICS AND ADOPTION
+Q7. Would you use a forecasting system that only analyzes group-level data (never individual members)? (Yes | No | Only with supervision approval)
+Q8. How likely are you to adopt a free, web-based predictive dashboard if it met your privacy requirements? (1 = Very unlikely, 5 = Very likely): 1 | 2 | 3 | 4 | 5
+Q9. What is the most important feature a predictive analytics system for your church should have? (Open text — max 100 words)
+REFERENCES
+Al-Rahmi, W. M., Al-Samarraie, H., & Zalani, A. Z. (2024). Artificial Intelligence in Religious Education: A Systematic Review. 
+Computers & Education: X
+, 
+14
+, 100412. https://doi.org/10.1016/j.cedx.2024.100412
+Campbell, H. A. (2022). 
+Digital Religion: Understanding Religious Practice in New Media Worlds
+. Routledge.
+Chaves, M. (2020). 
+American Religion: Contemporary Trends
+. Princeton University Press.
+Chaves, M., & Anderson, S. (2022). Why People Leave Churches: A Longitudinal Study. 
+Journal for the Scientific Study of Religion
+, 
+61
+(3), 451–468. https://doi.org/10.1111/jssr.12789
+Chen, Y., Liu, Q., & Wang, L. (2023). Retrieval-Augmented Generation for Domain-Specific Question Answering: A Case Study in Theological Texts. 
+Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP)
+, 112–125.
+Drucker, H., Burges, C. J. C., Kaufman, L., Smola, A. J., & Vapnik, V. (1997). Support Vector Regression Machines. 
+Advances in Neural Information Processing Systems (NeurIPS)
+, 
+9
+, 155–161.
+Heeks, R. (2023). Digital Religion in the Global South: ICTs, Faith, and Community. 
+ICT4D Conference Proceedings
+, 45–58.
+International Telecommunication Union (ITU). (2024). 
+Measuring Digital Development: Facts and Figures 2024
+. Geneva: ITU.
+Khan, S., Ahmad, I., & Javaid, N. (2022). Short-Term Load Forecasting Using Hybrid SVR Models. 
+Energy and AI
+, 
+8
+, 100145. https://doi.org/10.1016/j.egyai.2022.100145
+Kenya National Council of Churches (KNCC). (2024). 
+Guidelines for Digital Discipleship in Kenyan Churches
+. Nairobi: KNCC Publications.
+LifeWay Research. (2024). 
+Church Analytics and Member Retention: A U.S. Case Study
+. Nashville: LifeWay Christian Resources.
+Mullins, J. (2021). 
+Membership
+ Health Metrics: Beyond Attendance
+. Faith & Leadership Journal. https://faithandleadership.com/
+membership
+-health-metrics-beyond-attendance
+Mugambi, D., & Theuri, P. (2021). Digital Adoption in Kenyan Churches: Opportunities and Barriers. 
+Journal of African Christian Thought
+, 
+24
+(2), 45–60.
+Nwosu, C., & Mwangi, P. (2025). Local-First AI for Pastoral Care in Sub-Saharan Africa. 
+Journal of ICT for Development
+, 
+12
+(1), 33–49.
+Shatte, A. B. R., Hutchinson, D. M., & Teague, S. J. (2021). Machine Learning in Mental Health: A Scoping Review. 
+JMIR Mental Health
+, 
+8
+(6), e25731. https://doi.org/10.2196/25731
+Smola, A. J., & Schölkopf, B. (2004). A Tutorial on Support Vector Regression. 
+Statistics and Computing
+, 
+14
+(3), 199–222. https://doi.org/10.1023/B:STCO.0000035301.49549.88
+Zhang, L., Wang, Y., & Chen, H. (2023). Demand Forecasting in Retail Using Hybrid SVR Models. 
+Expert Systems with Applications
+, 
+213
+, 119045. https://doi.org/10.1016/j.eswa.2022.119045

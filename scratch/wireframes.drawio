@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" modified="2024-05-05T00:00:00.000Z" agent="Mozilla/5.0" version="24.2.5" type="device">
+  <diagram id="ui-wireframes" name="Wireframes">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="screen1" value="Login Screen" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" parent="1" vertex="1">
+          <mxGeometry x="50" y="50" width="300" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="l_title" value="Congregate&amp;lt;br&amp;gt;&amp;lt;b&amp;gt;Growth Forecasting&amp;lt;/b&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;" parent="screen1" vertex="1">
+          <mxGeometry x="25" y="120" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="l_email" value="Email Address" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;fillColor=#f3f4f6;" parent="screen1" vertex="1">
+          <mxGeometry x="25" y="250" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l_pass" value="Password" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;fillColor=#f3f4f6;" parent="screen1" vertex="1">
+          <mxGeometry x="25" y="310" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l_btn" value="Sign In" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f766e;fontColor=#ffffff;fontStyle=1" parent="screen1" vertex="1">
+          <mxGeometry x="25" y="380" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="screen2" value="Attendance Logger" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" parent="1" vertex="1">
+          <mxGeometry x="400" y="50" width="300" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="a_header" value="Log Attendance" style="text;html=1;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;" parent="screen2" vertex="1">
+          <mxGeometry x="25" y="50" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a_group" value="Select Group: Main Service v" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;" parent="screen2" vertex="1">
+          <mxGeometry x="25" y="120" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a_date" value="Date: May 5, 2026" style="rounded=1;whiteSpace=wrap;html=1;align=left;spacingLeft=10;" parent="screen2" vertex="1">
+          <mxGeometry x="25" y="180" width="250" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="a_headcount_lbl" value="Total Headcount" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;" parent="screen2" vertex="1">
+          <mxGeometry x="25" y="250" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="a_headcount" value="450" style="rounded=1;whiteSpace=wrap;html=1;align=center;fontSize=36;fontStyle=1;fillColor=#f9fafb;" parent="screen2" vertex="1">
+          <mxGeometry x="75" y="280" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="a_submit" value="SUBMIT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0f766e;fontColor=#ffffff;fontStyle=1;fontSize=16;" parent="screen2" vertex="1">
+          <mxGeometry x="25" y="400" width="250" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="a_success" value="&amp;lt;font color=&amp;quot;#0f766e&amp;quot;&amp;gt;✓ Successfully logged!&amp;lt;/font&amp;gt;" style="text;html=1;align=center;verticalAlign=middle;fontSize=14;" parent="screen2" vertex="1">
+          <mxGeometry x="25" y="480" width="250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="screen3" value="Home Dashboard" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" parent="1" vertex="1">
+          <mxGeometry x="750" y="50" width="350" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="d_header" value="Dashboard" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" parent="screen3" vertex="1">
+          <mxGeometry x="25" y="40" width="300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c1" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d1d5db;" parent="screen3" vertex="1">
+          <mxGeometry x="25" y="100" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c1_title" value="&amp;lt;b&amp;gt;Main Service&amp;lt;/b&amp;gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="110" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c1_hc" value="Last: 450" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#4b5563;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="140" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c1_trend" value="↗ 4-wk trend (+5%)" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#0f766e;fontStyle=1;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="170" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c1_alert" value="2 Alerts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f59e0b;fontColor=#ffffff;fontStyle=1;strokeColor=none;" parent="screen3" vertex="1">
+          <mxGeometry x="240" y="115" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d1d5db;" parent="screen3" vertex="1">
+          <mxGeometry x="25" y="240" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c2_title" value="&amp;lt;b&amp;gt;Youth Ministry&amp;lt;/b&amp;gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="250" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c2_hc" value="Last: 85" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#4b5563;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="280" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c2_trend" value="→ 4-wk trend (0%)" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#6b7280;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="310" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d1d5db;" parent="screen3" vertex="1">
+          <mxGeometry x="25" y="380" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c3_title" value="&amp;lt;b&amp;gt;Children&amp;#39;s Church&amp;lt;/b&amp;gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=16;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="390" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c3_hc" value="Last: 120" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#4b5563;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="420" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c3_trend" value="↘ 4-wk trend (-2%)" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#4b5563;" parent="screen3" vertex="1">
+          <mxGeometry x="40" y="450" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d_c3_alert" value="1 Alert" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f59e0b;fontColor=#ffffff;fontStyle=1;strokeColor=none;" parent="screen3" vertex="1">
+          <mxGeometry x="240" y="395" width="60" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="d_nav" value="Home | Log | Groups" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f3f4f6;strokeColor=none;" parent="screen3" vertex="1">
+          <mxGeometry x="0" y="650" width="350" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="screen4" value="Group Detail" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="50" width="350" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_back" value="&amp;lt; Back" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#0f766e;" parent="screen4" vertex="1">
+          <mxGeometry x="20" y="40" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_header" value="Main Service" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;" parent="screen4" vertex="1">
+          <mxGeometry x="80" y="40" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_alert" value="⚠ Expected high attendance next week (+15%)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontColor=#b45309;align=left;spacingLeft=10;" parent="screen4" vertex="1">
+          <mxGeometry x="20" y="90" width="310" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_chart_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d1d5db;" parent="screen4" vertex="1">
+          <mxGeometry x="20" y="160" width="310" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_chart_title" value="12-Week History &amp;amp; Forecast" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontColor=#6b7280;" parent="screen4" vertex="1">
+          <mxGeometry x="20" y="170" width="310" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_chart_line1" value="" style="endArrow=none;html=1;strokeColor=#6b7280;strokeWidth=2;" parent="screen4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="320" as="sourcePoint" />
+            <mxPoint x="110" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gd_chart_line2" value="" style="endArrow=none;html=1;strokeColor=#6b7280;strokeWidth=2;" parent="screen4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="280" as="sourcePoint" />
+            <mxPoint x="180" y="260" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gd_chart_line3" value="" style="endArrow=none;html=1;strokeColor=#0f766e;strokeWidth=2;dashed=1;" parent="screen4" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="260" as="sourcePoint" />
+            <mxPoint x="310" y="190" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gd_chart_label_hist" value="History" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#6b7280;" parent="screen4" vertex="1">
+          <mxGeometry x="80" y="330" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_chart_label_fcast" value="Forecast" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontColor=#0f766e;" parent="screen4" vertex="1">
+          <mxGeometry x="220" y="330" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_rec_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0fdf4;strokeColor=#86efac;" parent="screen4" vertex="1">
+          <mxGeometry x="20" y="380" width="310" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_rec_title" value="&amp;lt;b&amp;gt;Recommendation&amp;lt;/b&amp;gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=14;fontColor=#166534;" parent="screen4" vertex="1">
+          <mxGeometry x="35" y="390" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_rec_text" value="Consider opening the balcony overflow seating. Ensure 3 extra ushers are scheduled." style="text;html=1;align=left;verticalAlign=top;fontSize=12;fontColor=#166534;whiteSpace=wrap;" parent="screen4" vertex="1">
+          <mxGeometry x="35" y="420" width="280" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="gd_rec_dismiss" value="Dismiss" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#166534;fontColor=#166534;fontStyle=1;fontSize=12;" parent="screen4" vertex="1">
+          <mxGeometry x="230" y="460" width="80" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

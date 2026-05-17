@@ -1,0 +1,1266 @@
+﻿
+CONGREGATIONAL GROWTH FORECASTING SYSTEM
+
+System Specification
+Functional Requirements, User Flows & Test Guide
+
+
+Document Type
+System Specification & Presentation Guide
+
+Project
+CG Forecast — ML-Powered Faith organization Intelligence
+
+Version
+1.0 — Production Ready
+
+Stack
+React 18 · FastAPI · PostgreSQL · SVR (scikit-learn)
+
+Prepared By
+Victor Nzwili / Antigravity Development Team
+
+Date
+April 2026
+
+Audience
+Panel Presentation · Engineering Team · QA
+
+
+
+1. Executive Overview
+The Faith Organization Growth Forecasting System (CG Forecast) is a full-stack web application that enables church leadership to monitor attendance, collect qualitative feedback, and receive AI-generated growth predictions for all registered faith groups. The machine learning layer uses Support Vector Regression (SVR) trained on historical attendance data to predict future attendance trajectories and automatically raise alerts when declining trends are detected.
+
+This document serves three purposes simultaneously:
+It is the complete functional specification for the Antigravity engineering team to implement, test, and verify all features.
+It is the presentation script for the panel demo — describing the expected system behaviour at every step.
+It is the QA checklist — each functional requirement includes a testable acceptance criterion.
+
+1.1 System Purpose
+Church leadership (pastors, administrators) currently track attendance manually — spreadsheets, paper registers, or disconnected apps. There is no mechanism to detect early warning signs of member disengagement, and no data-driven basis for pastoral intervention decisions. CG Forecast solves this by:
+Centralising data collection: Ushers log headcounts and RSVPs digitally at the point of service.
+Quantifying engagement: Feedback ratings are collected alongside attendance to produce a composite engagement score.
+Automating intelligence: An SVR model trained per faith group predicts attendance for the next 6 weeks and alerts leadership when a decline pattern is detected with high confidence.
+Enabling role-based access: Pastors and admins see forecasts and alerts; ushers log data; members view their own group. Each role sees only what is relevant to them.
+
+1.2 User Roles
+Role
+Who
+Primary Capability
+Dashboard Access
+
+Admin
+System administrator
+Full access — manage groups, users, models
+All pages
+
+Pastor
+Lead pastor / overseer
+View forecasts, receive alerts, read reports
+Dashboard, Forecast, Alerts, Feedback
+
+Usher
+Session doorkeeper / greeter
+Log attendance and RSVP data per session
+Dashboard, Attendance, Feedback
+
+Member
+Faith organization member
+View own group activity
+Dashboard, Feedback
+
+
+1.3 Technology Stack
+Layer
+Technology
+Purpose
+
+Frontend
+React 18 + Vite + TypeScript
+SPA, routing, UI components
+
+Styling
+CSS Variables + Tailwind
+Aurora dark theme design system
+
+Charts
+Recharts
+SVR forecast visualisation
+
+Backend
+FastAPI (Python)
+REST API, auth, business logic
+
+ML Engine
+scikit-learn SVR
+Per-group attendance regression models
+
+Database
+PostgreSQL
+Persistent data store
+
+Auth
+JWT tokens (HttpOnly cookies)
+Stateless session management
+
+Notifications
+Sonner (toast library)
+Real-time action feedback
+
+
+
+2. Onboarding & First-Run Experience
+For the panel demonstration, the system must simulate a realistic first-use journey in under 5 minutes. The flow below covers initial login, group creation, seed data loading, and ML model initialisation — all of which must be either pre-loaded or executable live during the demo.
+
+2.1 Pre-Demo Setup Checklist
+PRESENTER NOTE  Complete all steps in this section before the panel session begins. The goal is to have a seeded database so that the ML model already has data to train on, making the live demonstration feel real and responsive.
+Steps below should be completed 30 minutes before presentation.
+
+Step
+Action
+Expected Result
+Status
+
+1
+Run database migrations (npm run db:migrate)
+All tables created cleanly
+[ ]
+
+2
+Run seed script (npm run db:seed)
+6 groups, 90 days of attendance seeded
+[ ]
+
+3
+Trigger ML training (POST /api/ml/train-all)
+SVR model trained for each group
+[ ]
+
+4
+Verify forecast endpoint (/api/forecast/1)
+Returns predicted array with 6 weeks
+[ ]
+
+5
+Login as Pastor (samuel@church.org / demo123)
+Dashboard loads with real data
+[ ]
+
+6
+Login as Usher  (daniel@church.org / demo123)
+Limited nav — no Forecast page
+[ ]
+
+7
+Confirm 3 active alerts exist
+Alert badge shows 3 in sidebar
+[ ]
+
+
+2.2 New User Registration Flow
+FR-001 — Admin Creates a New User Account
+An administrator must be able to create new user accounts from the admin panel. This is the primary onboarding path for ushers and new pastoral staff.
+
+Field
+Input
+Validation
+
+Full Name
+Text field, max 100 chars
+Required, no numbers
+
+Email
+Email field
+Required, unique in system, valid format
+
+Role
+Dropdown: Admin/Pastor/Usher/Member
+Required
+
+Temporary Password
+Auto-generated 8-char string
+Shown once, user must change on first login
+
+
+Step-by-step UI flow:
+Admin navigates to Settings > Users > + New User
+Admin fills in name, email, role — password is auto-generated and displayed in a modal
+Admin clicks Create Account — system sends a welcome email with a temporary password link
+New user opens the email, clicks the link, lands on the /set-password page
+User sets a permanent password — must be 8+ characters, one number, one special character
+User is redirected to the login page and signs in with their new credentials
+On first login, a welcome modal appears explaining the system and their role capabilities
+
+ACCEPTANCE CRITERION  Test passed when:
+A new usher account can be created by admin without errors.
+The new usher can log in and sees only: Dashboard, Attendance, Feedback in the sidebar.
+The usher does NOT see Forecast or Alerts in their navigation.
+
+2.3 Returning User Login Flow
+FR-002 — Secure Login with Role-Based Redirect
+User visits the app root URL — if not authenticated, is redirected to /login
+User enters email and password — form validates on client before submit
+On success: JWT is issued, stored in HttpOnly cookie, user is redirected to /dashboard
+On failure: an inline error message appears — "Invalid credentials. Please try again."
+After 5 failed attempts: account is temporarily locked for 15 minutes
+
+DEMO ACCOUNTS  Use these during the panel presentation:
+Pastor:  samuel@church.org   / demo123
+Admin:   grace@church.org    / demo123
+Usher:   daniel@church.org   / demo123
+Member:  mary@church.org     / demo123
+
+
+3. Group Management
+Faith groups are the core unit of the system. Every attendance record, feedback entry, and ML model is scoped to a specific group. Admins and pastors can create, edit, and archive groups.
+
+3.1 Creating a Faith Group
+FR-010 — Create Group
+Field
+Type
+Required
+Notes
+
+Group Name
+Text
+Yes
+Max 80 characters, unique per church
+
+Category
+Dropdown
+Yes
+Youth / Adults / Seniors / Bible Study / Music / Prayer / Fellowship
+
+Leader Name
+Text / Lookup
+Yes
+Must be an existing user in the system
+
+Description
+Textarea
+No
+Max 300 characters
+
+Meeting Day
+Dropdown
+Yes
+Monday–Sunday
+
+Meeting Time
+Time picker
+No
+Used for session scheduling
+
+
+3.2 Group List View (Dashboard)
+The dashboard table shows all active groups with their latest ML trend signal. Columns visible to all roles:
+Group Name + last session date
+Category badge (colour-coded by type)
+Leader
+Current member count
+Trend indicator: green up arrow (+X%), amber flat arrow, or red down arrow (−X%)
+Status badge: Active / Warning / Alert
+
+UI BEHAVIOUR — Table vs Card view  The dashboard should support two display modes:
+Cards view (default): bento grid of group cards, each showing a 7-session sparkline chart.
+Table view: traditional rows — accessible via the "Table" tab toggle above the grid.
+Selected view preference is stored in localStorage and persists across sessions.
+
+
+4. Attendance Logging — Usher Flow
+This is the most frequent interaction in the system. An usher logs headcount and RSVP data immediately after each group session ends — ideally on a tablet or phone while still at the venue.
+
+4.1 Logging a New Attendance Record
+FR-020 — Submit Attendance Entry
+This is the primary usher task. The system must make it as fast as possible — ideally completable in under 30 seconds.
+
+Field
+Input Type
+Required
+Validation
+
+Group
+Dropdown
+Yes
+Only shows groups the usher is assigned to
+
+Session Date
+Date picker
+Yes
+Defaults to today, cannot be future date
+
+Headcount
+Number spinner
+Yes
+Min 0, max 9999, whole numbers only
+
+RSVP Count
+Number spinner
+No
+Min 0 — if blank, attendance rate cannot be calculated
+
+Notes
+Textarea
+No
+Max 200 chars — for special events, weather, public holidays
+
+
+Step-by-Step UI Flow (Usher)
+Usher logs in and lands on Dashboard
+Usher clicks "Log Attendance" in Quick Actions panel or navigates to Attendance page
+Usher selects the group from the dropdown (only their assigned groups appear)
+Session date defaults to today — usher can back-date by up to 7 days if they forgot to log
+Usher enters headcount (actual number of people who showed up)
+Usher optionally enters RSVP count (number who said they would come)
+As usher types, the Attendance Rate Preview panel updates in real time
+If headcount > RSVP count: system shows a warning "Headcount exceeds RSVP — confirm?" but allows submission
+Usher clicks Submit — a toast notification appears: "Attendance logged successfully"
+The form clears, ready for the next entry
+The new record immediately appears in the History tab below
+
+Attendance Rate Preview (Real-Time)
+As the usher fills in headcount and RSVP, the right panel shows:
+Rate percentage: headcount / RSVP × 100, displayed as a large number with colour coding
+Progress bar: Fills green for >80%, amber for 60–80%, red for <60%
+Comparison to group average: "This is 8% above your group average" — displayed after submission
+
+ACCEPTANCE CRITERION — FR-020  Test passed when:
+An usher can log attendance in under 30 seconds from page load.
+The attendance rate preview updates immediately on keypress without page reload.
+A duplicate submission for the same group + date shows a warning, not a silent overwrite.
+The submitted record appears in the History tab without a page refresh.
+A toast notification confirms submission within 1 second of the API response.
+
+4.2 Attendance History View
+FR-021 — View and Filter Attendance Records
+History tab shows the last 30 attendance records by default
+Usher can filter by Group, Date Range, or Rate (above/below 80%)
+Each row shows: Group name, Date, Headcount, RSVP, Rate %, Logged By
+Rows with rate < 60% are highlighted with a subtle red left border
+Export button generates a CSV file of the filtered records
+
+
+5. Session Feedback
+Feedback data provides the qualitative layer that improves SVR model accuracy by up to 18%. It captures how members felt about a session — not just whether they showed up.
+
+5.1 Submitting Feedback
+FR-030 — Log Session Feedback
+Field
+Input Type
+Required
+Notes
+
+Group
+Dropdown
+Yes
+Scoped to assigned groups
+
+Session Date
+Date picker
+Yes
+Defaults to today
+
+Average Rating
+1–5 star widget
+Yes
+Aggregate of member feedback collected at session
+
+Respondent Count
+Number
+No
+How many members were surveyed
+
+Key Themes
+Textarea
+No
+Free text summary of feedback themes
+
+
+Star Rating Widget Behaviour
+Stars animate on hover — partial highlight effect
+Selected rating glows with amber drop-shadow
+Label appears next to stars: 1=Poor, 2=Fair, 3=Good, 4=Very Good, 5=Outstanding
+Rating cannot be submitted as 0 — form validate blocks submission
+
+5.2 Feedback Contribution to ML
+The SVR model ingests feedback data as a secondary feature alongside raw attendance numbers:
+Feature
+Weight in SVR Model
+Notes
+
+Attendance count
+65%
+Primary predictor — number of people present
+
+Feedback rating
+25%
+Session quality — higher rating correlates with return attendance
+
+Engagement score
+10%
+Composite: RSVP fulfilment rate × feedback rating normalised
+
+
+IMPORTANT  For the panel demo:
+Demonstrate submitting feedback for a group that has borderline attendance.
+After submission, trigger a manual model retraining via the admin panel.
+Show that the forecast for that group updates — the prediction line shifts slightly.
+This proves the system is responsive to new data in near-real time.
+
+
+6. Machine Learning Engine — SVR Forecasting
+This is the core differentiator of the system. Each faith group has its own dedicated SVR (Support Vector Regression) model, trained on that group's historical attendance and feedback data. The model predicts attendance for the next 6 sessions (approximately 6 weeks for weekly groups).
+
+6.1 How the ML Pipeline Works
+Training Trigger Events
+The SVR model is automatically retrained in four situations:
+A new attendance record is submitted (triggers async retraining in background)
+New feedback is submitted for a group (retraining with updated feature weights)
+A manual retrain is triggered by admin from the Settings > ML Models page
+A scheduled nightly job runs at 02:00 local time to retrain all models on latest data
+
+Training Data Requirements
+Condition
+Result
+
+< 5 attendance records for group
+Model cannot be trained — shows "Insufficient data" state
+
+5–14 records
+Model trained but confidence interval is wide (±20%)
+
+15–29 records
+Model trained, moderate confidence (±12%)
+
+30+ records
+Full training, narrow confidence interval (±6%)
+
+
+FR-040 — View Forecast for a Group (Pastor View)
+Pastor navigates to the Forecast page
+A group selector dropdown shows all active groups
+On group selection, the page fetches the latest forecast from /api/forecast/:groupId
+The recharts AreaChart renders with two series: Historical (solid green line) and SVR Predicted (dashed indigo line)
+A shaded confidence band renders between lowerBound and upperBound values
+A KPI strip above the chart shows: Current members, 6-week predicted, % change, model accuracy
+Three insight cards below the chart show: Trend direction, Confidence interval, AI recommendation
+
+What the Chart Shows
+Visual Element
+Data Source
+Meaning
+
+Solid green line
+Historical attendance
+Actual headcount per session — ground truth
+
+Dashed indigo line
+SVR model output
+Predicted attendance for next 6 sessions
+
+Shaded blue/indigo band
+Confidence interval
+95% probability range — narrow = confident model
+
+Vertical dashed divider
+Today marker
+Separates historical from predicted data
+
+
+6.2 Alert Generation
+FR-041 — Automatic Alert Triggers
+The system generates alerts automatically when the SVR model detects significant patterns:
+Alert Type
+Trigger Condition
+Severity
+
+CRITICAL
+Attendance drop > 10% across 3+ consecutive sessions
+Red — immediate pastoral action
+
+WARNING
+Attendance drop 5–10% across 2+ consecutive sessions
+Amber — monitor closely
+
+GROWTH
+Attendance increase > 8% across 2+ sessions
+Green — positive signal
+
+STABLE
+Variance < 3% over 4 sessions — no significant change
+Blue — informational
+
+LOW DATA
+Group has not had a session logged in more than 21 days
+Grey — data gap warning
+
+
+Alert Detail View
+Each alert card on the Alerts page shows:
+Group name with severity colour coding and badge
+Alert message: plain-English description of what the model detected
+Recommendation: AI-generated pastoral action suggestion
+Date generated: when the alert was created
+Acknowledge button: marks the alert as seen — does not dismiss it, records timestamp
+
+PANEL DEMO MOMENT  Showcase the full alert lifecycle:
+1. Show the Alerts page with 3 unacknowledged alerts (pre-seeded).
+2. Click into the critical alert for Intercessory Prayer Group.
+3. Acknowledge it — show the button changes to "Acknowledged" and the badge count drops.
+4. Log a new attendance record for that group with a LOW headcount.
+5. Trigger manual retrain — show that the system generates a fresh alert within seconds.
+
+
+7. Complete Role-by-Role User Flows
+7.1 Pastor / Admin View — Full Journey
+Context
+The pastor opens the app on a Monday morning after Sunday services to review how all groups performed. This is the primary weekly ritual the system is designed for.
+
+Step-by-Step Flow
+Pastor opens the app on a desktop browser and is greeted: "Good day, [Name]" with today's date
+The SVR Model Alert banner at the top immediately draws attention — it shows the most critical decline alert
+The 4 stat cards show: Total Members (664), Active Groups (6), Active Alerts (3), SVR Accuracy (93.7%)
+Pastor scans the Faith Groups bento grid — group cards show sparkline trends at a glance
+Pastor notices the Intercessory Prayer Group card is glowing red with a −11% indicator
+Pastor clicks the group card — a side panel or modal opens showing the group's recent attendance history
+Pastor navigates to Forecast page — selects "Intercessory Prayer Group" from the dropdown
+The chart loads: historical line drops steeply, predicted line continues downward, confidence band is narrow (high certainty)
+The AI Recommendation card reads: "Initiate outreach immediately. Schedule one-on-one pastoral follow-ups."
+Pastor navigates to Alerts page — sees the CRITICAL alert for the group
+Pastor acknowledges the alert, creating an audit trail that they have seen and actioned it
+Pastor also checks the Sanctuary Choir — it is showing +12% growth with a GROWTH alert
+Pastor logs out — session is invalidated server-side
+
+7.2 Usher View — Sunday Session Flow
+Context
+The usher has just finished counting heads at the Youth Alive Fellowship Sunday session. They pull out their phone and log the attendance while walking back to the vestry.
+
+Step-by-Step Flow
+Usher opens the app on their phone (must be responsive — mobile breakpoint)
+Usher logs in with their credentials — lands on a simplified dashboard showing their assigned groups only
+Quick Actions panel is prominent — "Log Attendance" button is the largest element on screen
+Usher taps "Log Attendance" — taken to the attendance form
+Group dropdown auto-selects "Youth Alive Fellowship" if it is the usher's only assigned group
+Session date defaults to today (Sunday)
+Usher types headcount: 138
+Usher types RSVP count: 145
+Attendance Rate Preview instantly shows: 95.2% — the progress bar fills green
+"This is 3% above your group average" appears as contextual feedback
+Usher adds a note: "Youth leader away — assistant led. Slightly lower than usual."
+Usher taps Submit — toast appears: "Attendance logged. Thank you!"
+Usher is returned to the form, now cleared, ready for the next group if applicable
+
+MOBILE EXPERIENCE  Critical for the usher role:
+The attendance form must be fully usable on a 375px wide screen (iPhone SE).
+All buttons must be at least 44px tall for reliable touch targets.
+The RSVP field is optional and can be skipped with a single tap.
+The form must submit and confirm within 2 seconds on a 4G connection.
+
+
+8. Page-by-Page UI Specification
+8.1 Login Page
+Element
+Behaviour
+Test
+
+Email field
+Accepts email format only, shows inline error if not
+Input "notanemail" — red border + message appears
+
+Password field
+Masked input, toggle visibility button
+Click eye icon — text becomes visible
+
+Sign In button
+Disabled until both fields have content
+Empty form — button is greyed, unclickable
+
+Loading state
+Button shows spinner for duration of API call
+Slow network — spinner visible for >500ms
+
+Error state
+Inline banner: "Invalid credentials"
+Wrong password — banner appears, no page reload
+
+Demo account pills
+Clicking fills email + password fields
+Click "Pastor" pill — fields populated instantly
+
+Redirect on success
+Goes to /dashboard
+Valid login — URL changes to /dashboard
+
+
+8.2 Dashboard Page
+Element
+Behaviour
+Test
+
+Welcome greeting
+"Good day, [First name]" + today's date
+Check name matches logged-in user
+
+Alert banner
+Shows most critical unacknowledged alert
+With 3 alerts — most critical (CRITICAL) shows first
+
+Stat cards
+Hover effect: lifts + glows, click navigates
+Click "Active Alerts" card — goes to Alerts page
+
+Group cards grid
+Each card shows sparkline, trend %, member count
+Card with declining trend has red indicators
+
+Cards/Table toggle
+Switches between bento grid and data table
+Toggle persists after page refresh (localStorage)
+
+Quick Actions
+Log Attendance, Submit Feedback, Forecast, Alerts
+Each button navigates to correct page
+
+SVR Model Health
+Progress bars for each group's model accuracy
+Bars fill correctly, percentages are accurate
+
+Recent Activity feed
+Shows last 4 system events in reverse order
+After logging attendance — appears in feed
+
+
+8.3 Attendance Page (Usher)
+Element
+Behaviour
+Test
+
+Group dropdown
+Filters to assigned groups only for ushers
+Usher sees fewer groups than admin
+
+Date picker
+Defaults to today, max date = today
+Set future date — field rejects it
+
+Headcount field
+Numeric only, min 0
+Type letters — field ignores them
+
+Rate preview
+Updates live on every keystroke
+Change headcount — rate updates without lag
+
+Duplicate guard
+Shows warning if same group + date already logged
+Submit same session twice — warning modal
+
+Submit toast
+Success toast within 1 second of API response
+Submit — toast appears at bottom-right
+
+History tab
+New record appears immediately without refresh
+Submit — switch to History — record is visible
+
+Export button
+Downloads CSV of currently filtered records
+Click Export — browser downloads a .csv file
+
+
+8.4 Forecast Page (Pastor/Admin)
+Element
+Behaviour
+Test
+
+Group selector
+On change — fetches new forecast, chart re-renders
+Switch group — loading spinner then new chart
+
+Chart
+Historical (solid) + Predicted (dashed) + CI band
+Chart renders all three visual elements
+
+KPI strip
+4 values: current, predicted, %, accuracy
+Values are non-zero and match chart data
+
+Tooltip
+Hover on chart — shows date + values for that point
+Hover over chart — tooltip appears
+
+Insight cards
+Trend, confidence range, AI recommendation
+Growing group — recommendation is positive
+
+Comparison table
+All 6 groups side by side with deltas
+Table visible below chart, all groups listed
+
+Insufficient data
+Shows empty state if group has < 5 records
+Select new group with no data — empty state shows
+
+
+8.5 Alerts Page (Pastor/Admin)
+Element
+Behaviour
+Test
+
+Unacknowledged badge
+Red indicator showing count
+Badge count matches actual unacked alerts
+
+Type filter
+All / Decline / Growth / Stable filters
+Select "Decline" — only red alerts visible
+
+Status filter
+All / Pending / Acknowledged
+Select "Acknowledged" — shows only acked
+
+Alert card colour
+Red=drop, green=growth, amber=stable
+Each alert card has matching left border colour
+
+Acknowledge button
+Marks alert, button changes to "Acknowledged" tag
+Click — button disappears, tag appears, count drops
+
+Empty state
+Friendly message + "Clear filters" action button
+Filter to no results — empty state renders
+
+
+
+9. Complete Testing Checklist
+This section is the final QA gate before the panel presentation. Every item must be ticked off. Tests are grouped by severity: CRITICAL (system fails without it), HIGH (major feature broken), MEDIUM (UX degraded), LOW (cosmetic/minor).
+
+9.1 Authentication & Security — CRITICAL
+Test ID
+Test Description
+Expected Result
+Pass?
+
+AUTH-01
+Valid login with correct credentials
+Redirected to /dashboard
+[ ]
+
+AUTH-02
+Invalid login with wrong password
+Error banner, stays on /login
+[ ]
+
+AUTH-03
+Access /forecast without being logged in
+Redirected to /login
+[ ]
+
+AUTH-04
+Usher tries to access /forecast while logged in as usher
+403 page or redirect to dashboard
+[ ]
+
+AUTH-05
+Session expires after inactivity
+Redirect to login on next action
+[ ]
+
+AUTH-06
+Logout clears session
+Cannot access app after logout
+[ ]
+
+
+9.2 Attendance Logging — CRITICAL
+Test ID
+Test Description
+Expected Result
+Pass?
+
+ATT-01
+Log attendance with valid data
+Record saved, toast shown
+[ ]
+
+ATT-02
+Log attendance without a group selected
+Form does not submit, field highlighted red
+[ ]
+
+ATT-03
+Log duplicate attendance (same group + date)
+Warning modal appears
+[ ]
+
+ATT-04
+Log headcount greater than RSVP count
+Warning shown but submission allowed
+[ ]
+
+ATT-05
+Attendance rate preview updates on every keystroke
+No lag, rate recalculates instantly
+[ ]
+
+ATT-06
+New record appears in History tab without page refresh
+Record visible immediately
+[ ]
+
+ATT-07
+Export CSV contains correct data
+File downloads, opens in Excel correctly
+[ ]
+
+
+9.3 ML Forecast — HIGH
+Test ID
+Test Description
+Expected Result
+Pass?
+
+ML-01
+Forecast chart loads for a group with 30+ sessions
+Chart renders with all 3 visual elements
+[ ]
+
+ML-02
+Group with < 5 sessions shows insufficient data state
+Empty state with explanation shown
+[ ]
+
+ML-03
+Switching groups updates the chart and KPI strip
+New data loads within 2 seconds
+[ ]
+
+ML-04
+Chart tooltip shows correct values on hover
+Tooltip matches data in dataset
+[ ]
+
+ML-05
+Manual retrain from admin panel succeeds
+Success toast + model accuracy updates
+[ ]
+
+ML-06
+Forecast comparison table shows all groups
+All 6 groups visible with correct data
+[ ]
+
+
+9.4 Alerts — HIGH
+Test ID
+Test Description
+Expected Result
+Pass?
+
+ALT-01
+Unacknowledged count badge matches actual unacked alerts
+Badge shows correct number
+[ ]
+
+ALT-02
+Acknowledging an alert decrements the badge count
+Count drops by 1 immediately
+[ ]
+
+ALT-03
+Type filter (Decline/Growth/Stable) works correctly
+Only matching alerts shown
+[ ]
+
+ALT-04
+Status filter (Pending/Acknowledged) works correctly
+Only matching alerts shown
+[ ]
+
+ALT-05
+Empty state shows when filters return no results
+Empty state with CTA visible
+[ ]
+
+ALT-06
+New critical alert appears after manual ML retrain
+Alert appears in list within 5s
+[ ]
+
+
+9.5 Role-Based Access — CRITICAL
+Test ID
+Test Description
+Expected Result
+Pass?
+
+RBAC-01
+Usher sees Attendance page
+Page loads correctly
+[ ]
+
+RBAC-02
+Usher does NOT see Forecast in sidebar
+Forecast link absent from nav
+[ ]
+
+RBAC-03
+Usher does NOT see Alerts in sidebar
+Alerts link absent from nav
+[ ]
+
+RBAC-04
+Pastor sees Forecast page
+Forecast link present, page loads
+[ ]
+
+RBAC-05
+Pastor sees Alerts page
+Alerts link present, page loads
+[ ]
+
+RBAC-06
+Member only sees Dashboard and Feedback
+Only 2 nav items visible
+[ ]
+
+
+9.6 UI & Performance — MEDIUM
+Test ID
+Test Description
+Expected Result
+Pass?
+
+UI-01
+Dashboard loads in under 3 seconds on first visit
+Network tab: < 3s load time
+[ ]
+
+UI-02
+Forecast chart renders in under 2 seconds after group change
+Chart visible within 2s
+[ ]
+
+UI-03
+Attendance form works on 375px wide screen (iPhone SE)
+No horizontal scroll, all fields usable
+[ ]
+
+UI-04
+Sidebar collapses to icon rail on 1024px wide screen
+Icons only, labels hidden
+[ ]
+
+UI-05
+Toast notifications auto-dismiss after 4 seconds
+Toast disappears without action
+[ ]
+
+UI-06
+Dark/Light mode toggle persists after page refresh
+Mode unchanged after refresh
+[ ]
+
+UI-07
+All form error states have accessible colour contrast
+Red errors readable without colour
+[ ]
+
+
+
+10. Panel Presentation Demo Script
+This is the live walkthrough script for the panel presentation. Estimated duration: 12–15 minutes. Follow this sequence precisely to demonstrate the full capability of the system in a logical, story-driven order.
+
+PRESENTER TIP  Tell the story — do not just click buttons.
+The story is: "It is Monday morning. Pastor Samuel has just woken up. He wants to know how Sunday's sessions went and whether any group needs his attention this week."
+Every feature you demo should answer a question the pastor would actually ask.
+
+Act 1 — Login (1 min)
+Open the browser to the app. Show the login page.
+Say: "The system has four roles. Today I will show you the pastor view and the usher view."
+Click the Pastor demo pill — show how it auto-fills. Log in.
+Point out the loading animation and the dashboard greeting.
+
+Act 2 — Dashboard Overview (2 min)
+Point to the alert banner: "The system immediately tells me there is a problem."
+Walk through the 4 stat cards — hover to show the glow animation.
+Say: "93.7% model accuracy means the SVR predictions are reliable."
+Show the group cards — point to the red card for Intercessory Prayer Group: "This group needs attention."
+Toggle to the Table view and back to Cards view.
+
+Act 3 — Forecast Deep Dive (3 min)
+Navigate to the Forecast page.
+Say: "The model has been trained on 90 days of historical data."
+Select Intercessory Prayer Group — show the downward prediction curve.
+Point to the confidence band: "The model is 93% certain this group will continue to decline."
+Read the AI recommendation card aloud.
+Switch to Sanctuary Choir — show the positive growth curve.
+Scroll down to show the All Groups Comparison table.
+
+Act 4 — Alerts & Acknowledgment (2 min)
+Navigate to the Alerts page.
+Show the 3 unacknowledged alerts with the red badge.
+Acknowledge the critical alert — show the badge drop from 3 to 2.
+Filter to "Decline" only — show that Growth alerts are hidden.
+Say: "Every acknowledgment creates an audit trail — we know the pastor saw this alert at this time."
+
+Act 5 — Usher Flow (3 min)
+Log out of the pastor account.
+Log in as Usher Daniel Kamau.
+Point out the simplified sidebar — no Forecast, no Alerts.
+Say: "The usher only sees what is relevant to their job."
+Click Log Attendance — fill in Youth Alive Fellowship, today's date, headcount 138, RSVP 145.
+Show the real-time attendance rate updating as you type.
+Submit — show the toast notification.
+Switch to History tab — show the new record appears immediately.
+
+Act 6 — Near-Real-Time ML Update (2 min)
+Go back to admin panel (log in as Admin Grace).
+Navigate to Settings > ML Models.
+Click "Retrain All Models".
+Show the spinner / progress indicator.
+Navigate back to Forecast — show that model accuracy has updated.
+Say: "In production, this retraining happens automatically every time new data is submitted."
+
+Act 7 — Close (1 min)
+Return to the dashboard as pastor.
+Show the Recent Activity feed — the attendance log and retrain events are visible.
+Say: "Everything that happens in this system is logged, timestamped, and contributes to the intelligence layer."
+Say: "Thank you. Questions welcome."
+
+
+11. Known Issues & Required Fixes (Pre-Demo)
+Based on the current state of the Antigravity build, the following items must be resolved before the panel presentation. This section cross-references the screenshot provided and maps visible issues to their root cause and fix.
+
+11.1 Issues Observed in Screenshot
+Issue
+Location
+Problem
+Fix Required
+
+UI-01
+Stat cards
+Total Members shows "11" — should be 664
+Seed script not run or API returning test data
+
+UI-02
+Stat cards
+Active Groups shows "3" — should be 6
+Only 3 groups seeded — run full seed script
+
+UI-03
+Sidebar
+"Import Data" nav item present — not in spec
+Remove from nav — not a v1 feature
+
+UI-04
+Sidebar
+"Sign Out" styled in red — should be neutral
+Remove red colour from sign-out link
+
+UI-05
+Sidebar
+Theme toggle visible (Dark button) — not needed
+Remove or move to user profile settings
+
+UI-06
+Groups table
+Leader shows "Admin User" for all — generic
+Seed data must use real leader names
+
+UI-07
+Groups table
+Trend shows "+5%" for all groups — identical
+Seed data must have varied realistic trends
+
+UI-08
+Page canvas
+Background is white/light — not dark aurora
+index.css aurora background not applied
+
+
+11.2 Seed Data Requirements
+The following 6 groups must be present in the database with realistic, varied data:
+Group Name
+Category
+Leader
+Members
+90-day Trend
+Current Status
+
+Youth Alive Fellowship
+Youth
+D. Kamau
+142
++8%
+Active
+
+Morning Glory Bible Study
+Bible Study
+G. Njeri
+87
+-4%
+Warning
+
+Sanctuary Choir
+Music
+S. Waweru
+65
++12%
+Active
+
+Women's Fellowship
+Fellowship
+M. Otieno
+203
++1%
+Active
+
+Intercessory Prayer Group
+Prayer
+P. Mwangi
+48
+-11%
+Alert
+
+Men's Brotherhood
+Fellowship
+J. Kariuki
+119
++3%
+Active
+
+
+11.3 API Endpoint Verification
+Run these curl commands to verify the backend is responding correctly before the demo:
+# 1. Login and get token
+curl -X POST http://localhost:8000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"samuel@church.org","password":"demo123"}'
+ 
+# 2. Get all groups (should return 6)
+curl http://localhost:8000/api/groups \
+  -H "Authorization: Bearer <token>"
+ 
+# 3. Get forecast for group 1 (should return 10 data points)
+curl http://localhost:8000/api/forecast/1 \
+  -H "Authorization: Bearer <token>"
+ 
+# 4. Get active alerts (should return at least 3)
+curl http://localhost:8000/api/alerts?status=active \
+  -H "Authorization: Bearer <token>"
+ 
+# 5. Trigger manual ML retrain
+curl -X POST http://localhost:8000/api/ml/train-all \
+  -H "Authorization: Bearer <token>"
+
+
+12. Appendix — Data Models
+These are the canonical data structures that the frontend expects from the API. Any deviation from these shapes will cause UI rendering errors.
+
+12.1 Core API Response Shapes
+// User
+{ id: string, name: string, email: string,
+  role: "admin" | "pastor" | "usher" | "member" }
+ 
+// Group
+{ id: number, name: string, category: string,
+  leader: { name: string }, createdAt: string,
+  memberCount: number, status: "active"|"warning"|"alert" }
+ 
+// Attendance Record
+{ id: number, groupId: number, sessionDate: string,
+  headcount: number, rsvpCount: number | null,
+  notes: string | null, loggedBy: string }
+ 
+// Forecast Data Point (array of 10 = 4 historical + 6 predicted)
+{ date: string, actual: number | null,
+  predicted: number | null,
+  lowerBound: number | null, upperBound: number | null }
+ 
+// Alert
+{ id: number, groupId: number,
+  alertType: "drop" | "growth" | "stable",
+  severity: "critical" | "warning" | "positive" | "info",
+  message: string, recommendation: string,
+  acknowledged: boolean, createdAt: string }
+ 
+// Feedback
+{ id: number, groupId: number, sessionDate: string,
+  avgRating: number, respondentCount: number,
+  themes: string | null, loggedBy: string }
+
+12.2 Functional Requirement Index
+FR ID
+Requirement
+Section
+Priority
+
+FR-001
+Admin creates user account
+2.2
+HIGH
+
+FR-002
+Secure login + role redirect
+2.3
+CRITICAL
+
+FR-010
+Create faith group
+3.1
+HIGH
+
+FR-011
+View group list with trends
+3.2
+HIGH
+
+FR-020
+Submit attendance record
+4.1
+CRITICAL
+
+FR-021
+View attendance history
+4.2
+HIGH
+
+FR-030
+Submit session feedback
+5.1
+HIGH
+
+FR-040
+View SVR forecast chart
+6.1
+CRITICAL
+
+FR-041
+Automatic alert generation
+6.2
+CRITICAL
+
+FR-050
+Acknowledge alert
+8.5
+HIGH
+
+FR-060
+Export attendance CSV
+4.2
+MEDIUM
+
+FR-070
+Manual ML model retrain
+6.1
+MEDIUM
+
+FR-080
+Role-based navigation
+7.2
+CRITICAL
+
+
+

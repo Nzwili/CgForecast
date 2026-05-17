@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id                Int            @id @default(autoincrement())
+  name              String
+  email             String         @unique
+  passwordHash      String
+  role              String         // admin | pastor | analyst | usher | member
+  church            String?        // campus / church name from signup
+  emailVerified     Boolean        @default(true)   // true for seeded accounts
+  verificationToken String?        // null once verified
+  createdAt         DateTime       @default(now())
+  groups            Group[]        @relation("leader")
+  churchProfile     ChurchProfile?
+}
+
+model Group {
+  id         Int          @id @default(autoincrement())
+  name       String
+  category   String
+  leaderId   Int
+  leader     User         @relation("leader", fields: [leaderId], references: [id])
+  attendance Attendance[]
+  feedback   Feedback[]
+  features   Feature[]
+  forecasts  Forecast[]
+  createdAt  DateTime     @default(now())
+}
+
+model Attendance {
+  id          Int      @id @default(autoincrement())
+  groupId     Int
+  group       Group    @relation(fields: [groupId], references: [id])
+  sessionDate DateTime
+  headcount   Int
+  rsvpCount   Int      @default(0)
+  recordedAt  DateTime @default(now())
+
+  @@unique([groupId, sessionDate])
+}
+
+model Feedback {
+  id            Int      @id @default(autoincrement())
+  groupId       Int
+  group         Group    @relation(fields: [groupId], references: [id])
+  sessionDate   DateTime
+  avgRating     Float
+  responseCount Int
+  createdAt     DateTime @default(now())
+
+  @@unique([groupId, sessionDate])
+}
+
+model Feature {
+  id           Int      @id @default(autoincrement())
+  groupId      Int
+  group        Group    @relation(fields: [groupId], references: [id])
+  featureDate  DateTime
+  rollingAvg4w Float
+  trendSlope   Float
+  rsvpRate     Float
+  feedbackAvg  Float
+  computedAt   DateTime @default(now())
+}
+
+model Forecast {
+  id                 Int      @id @default(autoincrement())
+  groupId            Int
+  group              Group    @relation(fields: [groupId], references: [id])
+  forecastDate       DateTime
+  horizonWeeks       Int      @default(4)
+  predictedHeadcount Float
+  confidenceLower    Float
+  confidenceUpper    Float
+  generatedAt        DateTime @default(now())
+  alerts             Alert[]
+}
+
+model Alert {
+  id             Int      @id @default(autoincrement())
+  forecastId     Int
+  forecast       Forecast @relation(fields: [forecastId], references: [id])
+  groupId        Int
+  alertType      String   // drop | growth | stable
+  message        String
+  recommendation String
+  acknowledged   Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model ChurchProfile {
+  id               Int      @id @default(autoincrement())
+  userId           Int      @unique
+  user             User     @relation(fields: [userId], references: [id])
+  churchName       String
+  activeMembership Int?
+  location         String?  // Nairobi CBD | Westlands | Eastlands | Southlands | Northlands | Other Nairobi
+  yearsOfRecords   String?  // Less than 1 year | 1-2 years | 2-5 years | 5+ years
+  techStack        String?  // comma-separated: Excel, Google Sheets, WhatsApp logs, Dedicated CMS, Other
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
