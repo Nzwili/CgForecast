@@ -19,20 +19,8 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 
 def get_connection():
-    # Inspect the schema.prisma file to determine database provider
-    schema_path = os.path.join(os.path.dirname(__file__), '..', 'server', 'prisma', 'schema.prisma')
-    use_sqlite = True
-    if os.path.exists(schema_path):
-        try:
-            with open(schema_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-                if 'provider = "postgresql"' in content:
-                    use_sqlite = False
-        except Exception:
-            pass
-
     db_url = os.environ.get('DATABASE_URL', '')
-    if not use_sqlite and (db_url.startswith('postgres://') or db_url.startswith('postgresql://')):
+    if db_url.startswith('postgres://') or db_url.startswith('postgresql://'):
         if db_url.startswith('postgres://'):
             db_url = db_url.replace('postgres://', 'postgresql://', 1)
         import psycopg2
