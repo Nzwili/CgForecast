@@ -43,7 +43,8 @@ export function LoginPage({ onLogin }: { onLogin:(email:string, pw:string)=>Prom
     setLoading(true); setErr('')
     try {
       await api.post('/api/auth/register', { name, email, password: pw, role, church })
-      setMode('verification')
+      setVerified(true)
+      setMode('login')
     } catch (error: any) {
       setErr(error.response?.data?.error || 'Failed to register account.')
     } finally { setLoading(false) }
@@ -70,8 +71,8 @@ export function LoginPage({ onLogin }: { onLogin:(email:string, pw:string)=>Prom
             <div className="notice notice-ok" style={{marginBottom: 16}}>
               <span className="notice-icon">✅</span>
               <div className="notice-body">
-                <div className="notice-title">Email Verified!</div>
-                <div className="notice-msg">Your account is now active. Sign in below.</div>
+                <div className="notice-title">Account Active!</div>
+                <div className="notice-msg">Your account has been created successfully. Sign in below.</div>
               </div>
             </div>
           )}

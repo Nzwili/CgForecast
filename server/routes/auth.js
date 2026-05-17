@@ -34,8 +34,8 @@ router.post('/register', async (req, res) => {
         passwordHash: hash,
         role,
         church: church || null,
-        emailVerified: false,
-        verificationToken,
+        emailVerified: true, // Auto-verify new signups instantly for seamless live presentation!
+        verificationToken: null,
       }
     });
 
