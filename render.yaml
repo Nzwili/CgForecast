@@ -22,7 +22,7 @@ services:
     # Cloud Build Cycle: Translate Prisma to Postgres, compile React, and generate Postgres client in their correct directories
     buildCommand: node server/prepare-prisma.js && cd server && npm install && npx prisma generate && cd ../client && npm install && npm run build
     # Cloud Boot Cycle: Deploy database tables, run initial presentation seed data, and start Express server from the server folder
-    startCommand: cd server && npx prisma migrate deploy && npx prisma db seed && node index.js
+    startCommand: cd server && npx prisma db push --accept-data-loss && npx prisma db seed && node index.js
     envVars:
       - key: DATABASE_URL
         fromDatabase:
