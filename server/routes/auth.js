@@ -66,8 +66,12 @@ router.get('/verify', async (req, res) => {
 
     const user = await prisma.user.findUnique({ where: { email: decoded.email } });
     if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Dynamically calculate redirect URL so it works in both cloud and local environments seamlessly
+    const clientUrl = process.env.CLIENT_URL || `${req.protocol}://${req.get('host')}`;
+
     if (user.emailVerified) {
-      return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/?verified=already`);
+      return res.redirect(`${clientUrl}/?verified=already`);
     }
 
     await prisma.user.update({
@@ -76,7 +80,7 @@ router.get('/verify', async (req, res) => {
     });
 
     // Redirect to login page with a success flag
-    res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/?verified=true`);
+    res.redirect(`${clientUrl}/?verified=true`);
   } catch (err) {
     res.status(400).json({ error: 'Invalid or expired verification token' });
   }
