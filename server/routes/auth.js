@@ -84,8 +84,12 @@ router.get('/verify', async (req, res) => {
 
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'email and password are required' });
+
+  // Sanitize input to eliminate browser auto-complete spaces and keyboard capitalization
+  email = email.trim().toLowerCase();
+
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
     return res.status(401).json({ error: 'Invalid credentials' });
