@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
     // Generate a 24-hour email verification token
     const verificationToken = jwt.sign(
       { email, purpose: 'email-verify' },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'cg-forecast-secret-presentation-key-2026',
       { expiresIn: '24h' }
     );
 
@@ -61,7 +61,7 @@ router.get('/verify', async (req, res) => {
   const { token } = req.query;
   if (!token) return res.status(400).json({ error: 'Token required' });
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'cg-forecast-secret-presentation-key-2026');
     if (decoded.purpose !== 'email-verify') return res.status(400).json({ error: 'Invalid token purpose' });
 
     const user = await prisma.user.findUnique({ where: { email: decoded.email } });
@@ -102,7 +102,7 @@ router.post('/login', async (req, res) => {
 
   const token = jwt.sign(
     { id: user.id, role: user.role, name: user.name, email: user.email },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET || 'cg-forecast-secret-presentation-key-2026',
     { expiresIn: '7d' }
   );
 
