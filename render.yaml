@@ -5,7 +5,7 @@ services:
     name: cg-forecast-ml
     env: python
     buildCommand: pip install -r ml/requirements.txt
-    startCommand: cd ml && uvicorn service:app --host 0.0.0.0 --port 5001
+    startCommand: cd ml && uvicorn service:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -29,7 +29,7 @@ services:
           name: congregate-db
           property: connectionString
       - key: ML_SERVICE_URL
-        value: http://cg-forecast-ml:5001
+        value: http://cg-forecast-ml:10000
       - key: PORT
         value: 3001
 
