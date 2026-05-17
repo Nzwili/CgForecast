@@ -181,8 +181,8 @@ export function LoginPage({ onLogin }: { onLogin:(email:string, pw:string)=>Prom
               <div style={{fontSize:'0.82rem',color:'var(--t-mid)', lineHeight: 1.5, marginBottom: '24px'}}>
                 We've sent a verification link to <strong>{email}</strong>. Please check your inbox and click the link to activate your account.
               </div>
-              <button className="btn btn-success w-full" style={{justifyContent:'center',padding:'11px',fontSize:'0.85rem'}} onClick={() => { setMode('login'); setErr(''); setPw(''); }}>
-                (Simulate) I've verified my email →
+              <button className="btn btn-primary w-full" style={{justifyContent:'center',padding:'11px',fontSize:'0.85rem'}} onClick={() => { setMode('login'); setErr(''); setPw(''); }}>
+                Back to Sign In
               </button>
             </div>
           )}
